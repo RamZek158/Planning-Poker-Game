@@ -1,5 +1,5 @@
-ÿþ
-/.idea/
-/.vscode/
-/node_modules/
-/dist/
+
+.vscode/
+.idea/
+dist/
+node_modules/
