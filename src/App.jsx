@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from './src/components/Header';
+import Header from './components/Header';
 import MainPage from './pages/MainPage';
-import './styles/main';
+import './styles/mian.css';
 
 export default function App() {
   return (
