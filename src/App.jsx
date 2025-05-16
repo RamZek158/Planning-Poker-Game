@@ -1,6 +1,15 @@
 import React from 'react';
-import './styles.css';
+import Header from './components/Header';
+import MainPage from './pages/MainPage';
+import './styles/main.css';
 
 export default function App() {
-  return (<div>test</div>)
+  return (
+    <div className="app">
+      <Header />
+      <main>
+        <MainPage />
+      </main>
+    </div>
+  );
 }
