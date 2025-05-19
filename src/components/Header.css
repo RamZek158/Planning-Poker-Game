@@ -1,0 +1,110 @@
+.header {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --text-color: white;
+    --hover-light: rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+
+/* Левая секция */
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.logo-image {
+    height: 100px;
+    width: 100px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+
+/* Правая секция */
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-register {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-register:hover {
+    background-color: #2980b9;
+}
+
+.btn-login:hover {
+    background-color: var(--hover-light);
+}
+
+
+/* Иконка профиля */
+
+.profile-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    background-color: #34495e;
+}
+
+.profile-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-icon-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
