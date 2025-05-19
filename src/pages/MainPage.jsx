@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function MainPage() {
+const MainPage = () => {
   return (
     <section className="hero">
       <h1>Welcome to our website</h1>
@@ -8,3 +8,6 @@ export default function MainPage() {
     </section>
   );
 }
+
+MainPage.displayName = 'MainPage';
+export default MainPage;
