@@ -1,20 +1,20 @@
 import React from 'react';
 import './Header.css';
-import logo from '../assets/images/logo.png';
-import profileIcon from '../assets/images/profile-icon.png'; // Импорт из той же папки
+import logo from '../../assets/images/logo.png';
+import profileIcon from '../../assets/images/profile-icon.png'; // Импорт из той же папки
 
 const Header = () => {
   return (
     <header className="header">
       <div className="left-section">
         <img src={logo} alt="Логотип" className="logo-image" />
-        <p className="logo-text">Планирование задач - игра в покер</p>
+        <p className="logo-text">Planning Poker Game</p>
       </div>
 
       <div className="right-section">
         <div className="auth-buttons">
-          <button className="btn btn-register">Регистрация</button>
-          <button className="btn btn-login">Вход</button>
+          <button className="btn primary">Зарегистрироваться через Google 🚀</button>
+          <button className="btn secondary">Начать новую игру</button>
         </div>
         <div className="profile-icon-wrapper">
           <img 

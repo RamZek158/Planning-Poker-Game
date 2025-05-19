@@ -46,42 +46,6 @@
     gap: 0.75em;
 }
 
-.btn {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9375em;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-register {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    border: none;
-}
-
-.btn-login {
-    background-color: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--text-color);
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.btn-register:hover {
-    background-color: #2980b9;
-}
-
-.btn-login:hover {
-    background-color: var(--hover-light);
-}
-
-
 /* Иконка профиля */
 
 .profile-icon-wrapper {

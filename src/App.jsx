@@ -1,17 +1,17 @@
 import React from 'react';
-import Header from './components/Header';
+import {
+    Header,
+    HomePage
+} from './components';
 import './App.css';
 
 function App() {
   return (
     <div className="app">
       <Header />
-      
       <main className="main-content">
         {/* Здесь будет основное содержимое вашего приложения */}
-        <h1>Добро пожаловать в Planning Poker</h1>
-        <p>Начните игру или присоединитесь к существующей сессии</p>
-        
+        <HomePage/>
         {/* Дополнительные компоненты будут добавляться здесь */}
       </main>
       
