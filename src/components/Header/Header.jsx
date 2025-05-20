@@ -12,6 +12,7 @@ const Header = () => {
         navigate('/create-game');
     }, [navigate]);
 
+
     
     return (
         <header className="header">
