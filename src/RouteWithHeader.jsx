@@ -1,9 +1,14 @@
-import React from "react";
+import React from 'react';
+import { Outlet } from 'react-router';
+import { Header } from './components';
 
 
 const RouteWithHeader = () => {
     return (
-        <div>Test</div>
+        <>
+            <Header />
+            <Outlet />
+        </>
     )
 }
 
