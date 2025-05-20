@@ -12,7 +12,9 @@
     color: var(--text-color);
 }
 
+
 /* Левая секция */
+
 .left-section {
     display: flex;
     align-items: center;
@@ -46,9 +48,11 @@
     gap: 0.75em;
 }
 
+
 /* Иконка профиля */
 
-.profile-icon-wrapper {
+
+/* .profile-icon-wrapper {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -69,4 +73,4 @@
 .profile-icon-wrapper:hover {
     transform: scale(1.05);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
-}
+} */

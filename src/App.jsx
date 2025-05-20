@@ -1,16 +1,26 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {
     Header,
-    HomePage
+    HomePage,
+    CreateGame
 } from './components';
 import './App.css';
 
 function App() {
   return (
-    <div className="app">
+  <div className="app">
+    <Routes>
+      <Route Component={RouteWithHeader}>
+      </Route>
+    </Routes>
       <Header />
       <main className="main-content">
-        {/* Здесь будет основное содержимое вашего приложения */}
+          {/* <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/create-game" element={<CreateGame />} />
+          </Routes> */}
+          
         <HomePage/>
         {/* Дополнительные компоненты будут добавляться здесь */}
       </main>
