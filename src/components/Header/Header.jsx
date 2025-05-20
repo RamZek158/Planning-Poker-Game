@@ -2,7 +2,7 @@ import React from 'react';
 import {useNavigate} from 'react-router';
 import './Header.css';
 import logo from '../../assets/images/logo.png';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 
 const Header = () => {
