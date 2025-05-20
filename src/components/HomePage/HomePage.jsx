@@ -9,5 +9,5 @@ const HomePage = () => {
   );
 }
 
-HomePage.displayName = 'MainPage';
+HomePage.displayName = 'HomePage';
 export default HomePage;

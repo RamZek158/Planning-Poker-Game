@@ -2,6 +2,7 @@ import React from 'react';
 import {useNavigate} from 'react-router';
 import './Header.css';
 import logo from '../../assets/images/logo.png';
+import { Link } from 'react-router-dom';
 
 
 const Header = () => {
@@ -11,10 +12,13 @@ const Header = () => {
         navigate('/create-game');
     }, [navigate]);
 
+    
     return (
         <header className="header">
             <div className="left-section">
-                <img src={logo} alt="Логотип" className="logo-image"/>
+                <Link to='/' className="left-section">
+                <img src={logo} alt="Логотип" className="logo-image" />
+                </Link>
                 <p className="logo-text">Planning Poker Game</p>
             </div>
 

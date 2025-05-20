@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router';
 import RouteWithHeader from './RouteWithHeader'
 import {
-    Header,
     HomePage,
     CreateGame
 } from './components';
