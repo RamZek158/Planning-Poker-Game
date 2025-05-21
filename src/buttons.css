@@ -1,5 +1,5 @@
-
 /* Button */
+
 .btn {
     padding: 0.5rem 1rem;
     border-radius: 6px;
@@ -15,7 +15,9 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+
 /* Primary button */
+
 .primary {
     background-color: var(--accent-color);
     color: var(--text-color);
@@ -26,7 +28,9 @@
     background-color: #2980b9;
 }
 
+
 /* Secondary button */
+
 .secondary {
     background-color: transparent;
     color: var(--text-color);
@@ -35,4 +39,45 @@
 
 .secondary:hover {
     background-color: var(--hover-light);
+}
+
+.NewGame {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    width: 500px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    margin: 8px 0 16px;
+}
+
+
+/* При наведении */
+
+.NewGame:hover {
+    background-color: #0056b3;
+}
+
+
+/* При фокусе */
+
+.NewGame:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+
+/* Для недоступного состояния */
+
+.NewGame:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    color: #666;
 }

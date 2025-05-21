@@ -32,34 +32,3 @@ select:focus {
 
 
 /* Стили для кнопки */
-
-.NewGame {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    width: 500px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-    margin: 8px 0 16px;
-}
-
-
-/* При наведении */
-
-.NewGame:hover {
-    background-color: #0056b3;
-}
-
-
-/* При фокусе */
-
-.NewGame:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
-}
