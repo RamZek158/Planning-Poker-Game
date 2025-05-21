@@ -12,7 +12,7 @@ const PlayingCard = ({cardSuitName, randomCardSuit, cardValue}) => {
     let cardSuit;
     let cardSuitClass = 'card_';
     if (cardSuitName) {
-        cardSuit = cardSuits[CARD_SUIT_MAP['cardSuitName']];
+        cardSuit = cardSuits[CARD_SUIT_MAP[cardSuitName]];
         cardSuitClass += cardSuitName;
     } else {
         cardSuit = cardSuits[randomCardSuit] || cardSuits[0];
