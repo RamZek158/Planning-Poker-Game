@@ -1,14 +1,14 @@
 .header {
-    --primary-color: #2c3e50;
-    --accent-color: #3498db;
+   /* --bg-color: #2c3e50;
+    --primary-color: #3498db;
     --text-color: white;
-    --hover-light: rgba(255, 255, 255, 0.1);
+    --hover-light: rgba(255, 255, 255, 0.1);*/
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: var(--primary-color);
+    background-color: var(--bg-header-color);
     color: var(--text-color);
 }
 
@@ -36,7 +36,6 @@
 
 
 /* Правая секция */
-
 .right-section {
     display: flex;
     align-items: center;
@@ -47,30 +46,3 @@
     display: flex;
     gap: 0.75em;
 }
-
-
-/* Иконка профиля */
-
-
-/* .profile-icon-wrapper {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid var(--text-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-    background-color: #34495e;
-}
-
-.profile-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile-icon-wrapper:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
-} */
