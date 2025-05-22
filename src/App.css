@@ -19,11 +19,23 @@ main {
 }
 
 .pageContainer {
-    margin: 50px 100px;
+    margin: 20px 100px;
 }
 
 .middleAlignContainer {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media (max-width: 768px) {
+    .pageContainer {
+        margin: 20px 50px;
+    }
+}
+
+@media (max-width: 576px) {
+    .pageContainer {
+        margin: 20px 25px;
+    }
 }

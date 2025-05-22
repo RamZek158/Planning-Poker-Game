@@ -17,9 +17,9 @@ const CreateGame = () => {
   }, [setGameName]);
 
   return (
-    <div className="create-game-container">
-      <section>
-        <div id="InputName">
+    <section className="pageContainer middleAlignContainer">
+      <div className="createGameSection">
+        <div>
           <input type="text" 
           onChange={handleChangeGameName}
                  id="InputName" 
@@ -30,16 +30,15 @@ const CreateGame = () => {
           <option value={FIBONACCI_VOTING_SYSTEM}>{`Modified Fibonacci (${fibonacci_system_string})`}</option>
           <option value={T_SHIRT_VOTING_SYSTEM}>{`T-shirts (${t_shirt_system_string})`}</option>
         </select>
-          <div>
+        <div>
             <button
                 className="btn primary"
                 disabled={!gameName}
             >Начать игру
             </button>
-          </div>
-      </section>
-    
-    </div>
+        </div>
+      </div>
+    </section>
   );
 };
 

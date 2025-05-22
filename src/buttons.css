@@ -6,7 +6,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .btn:hover {
