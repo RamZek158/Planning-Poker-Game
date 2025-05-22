@@ -6,18 +6,18 @@
     font-size: 16px;
 }
 
+
 /* Общие стили для input и select */
 
 input,
 select {
     padding: 10px 14px;
-    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    box-sizing: border-box;
     margin: 8px 0 16px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 /* Фокус на поле */
 
@@ -28,4 +28,48 @@ select:focus {
 }
 
 
-/* Стили для кнопки */
+/* Планшеты */
+
+@media (max-width: 1023px) and (min-width: 768px) {
+    .create-game-container {
+        margin-top: 100px;
+        font-size: 15px;
+    }
+    input,
+    select {
+        font-size: 15px;
+        padding: 8px 12px;
+    }
+}
+
+
+/* Мобильные устройства */
+
+@media (max-width: 767px) {
+    .create-game-container {
+        margin-top: 80px;
+        font-size: 14px;
+        padding: 0 16px;
+    }
+    input,
+    select {
+        width: 100%;
+        font-size: 14px;
+        padding: 8px 10px;
+        margin: 6px 0 12px;
+    }
+}
+
+
+/* Десктоп */
+
+@media (min-width: 1024px) {
+    .create-game-container {
+        font-size: 16px;
+    }
+    input,
+    select {
+        font-size: 16px;
+        padding: 10px 14px;
+    }
+}

@@ -17,3 +17,13 @@ main {
     flex: 1;
     padding: 2rem 0;
 }
+
+.pageContainer {
+    margin: 50px 100px;
+}
+
+.middleAlignContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
