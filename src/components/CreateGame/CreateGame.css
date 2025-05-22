@@ -16,10 +16,8 @@ select {
     border-radius: 6px;
     box-sizing: border-box;
     margin: 8px 0 16px;
-    width: 500px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 
 /* Фокус на поле */
 

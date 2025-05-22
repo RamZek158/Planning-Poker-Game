@@ -21,7 +21,7 @@ const CreateGame = () => {
                  placeholder="Название игры" 
           />
         </div>
-        <select id="scale">
+        <select id="votingOptions">
           <option>{`Modified Fibonacci (${fibonacci_system_string})`}</option>
           <option>{`T-shirts (${t_shirt_system_string})`}</option>
         </select>
