@@ -1,5 +1,5 @@
 .header {
-   /* --bg-color: #2c3e50;
+    /* --bg-color: #2c3e50;
     --primary-color: #3498db;
     --text-color: white;
     --hover-light: rgba(255, 255, 255, 0.1);*/
@@ -29,13 +29,24 @@
     flex-shrink: 0;
 }
 
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+    text-decoration: none;
+    color: white;
+}
+
 .logo-text {
     font-size: 1.25em;
     font-weight: 700;
+    cursor: pointer;
 }
 
 
 /* Правая секция */
+
 .right-section {
     display: flex;
     align-items: center;

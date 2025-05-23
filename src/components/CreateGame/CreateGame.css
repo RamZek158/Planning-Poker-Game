@@ -1,4 +1,3 @@
-
 .createGameSection {
     display: flex;
     flex-direction: column;
@@ -6,7 +5,12 @@
     align-items: center;
 }
 
+
 /* Общие стили для input и select */
+
+.ContentContainer {
+    width: 400px;
+}
 
 input,
 select {
