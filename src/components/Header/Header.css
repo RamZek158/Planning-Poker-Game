@@ -29,16 +29,16 @@
     flex-shrink: 0;
 }
 
-a,
-a:link,
-a:visited,
-a:hover,
-a:active {
+a.whiteTextLink,
+a.whiteTextLink:link,
+a.whiteTextLink:visited,
+a.whiteTextLink:hover,
+a.whiteTextLink:active {
     text-decoration: none;
     color: white;
 }
 
-.logo-text {
+.whiteTextLink {
     font-size: 1.25em;
     font-weight: 700;
     cursor: pointer;

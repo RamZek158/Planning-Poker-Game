@@ -19,8 +19,8 @@ const Header = () => {
             <div className="left-section">
                 <Link to='/' className="left-section">
                 <img src={logo} alt="Логотип" className="logo-image" />
-                <p className="logo-text">Planning Poker Game</p>
                 </Link>
+                <p className="whiteTextLink">Planning Poker Game</p>
             </div>
 
             <div className="right-section">
