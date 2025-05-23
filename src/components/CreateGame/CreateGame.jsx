@@ -22,17 +22,17 @@ const CreateGame = () => {
         <div>
           <input type="text" 
           onChange={handleChangeGameName}
-                 className="ContentContainer" 
+                 className="createGameItem"
                  placeholder="Название игры" 
           />
         </div>
-        <select className="ContentContainer" onChange={handleVotingTypeChange}>
+        <select className="createGameItem" onChange={handleVotingTypeChange}>
           <option value={FIBONACCI_VOTING_SYSTEM}>{`Modified Fibonacci (${fibonacci_system_string})`}</option>
           <option value={T_SHIRT_VOTING_SYSTEM}>{`T-shirts (${t_shirt_system_string})`}</option>
         </select>
         <div>
             <button
-                className="btn primary ContentContainer"
+                className="btn primary createGameItem"
                 disabled={!gameName}
             >Начать игру
             </button>

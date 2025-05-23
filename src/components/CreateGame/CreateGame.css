@@ -8,13 +8,18 @@
 
 /* Общие стили для input и select */
 
-.ContentContainer {
-    width: 400px;
+.createGameItem {
+    width: 500px;
+}
+
+input.createGameItem {
+    width: 480px;
 }
 
 input,
 select {
-    padding: 10px 14px;
+    font-size: 1em;
+    padding: 10px 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
     margin: 8px 0 16px;
@@ -33,46 +38,25 @@ select:focus {
 
 /* Планшеты */
 
-@media (max-width: 1023px) and (min-width: 768px) {
-    .create-game-container {
-        margin-top: 100px;
-        font-size: 15px;
+@media (max-width: 768px) {
+    .createGameItem {
+        width: 400px;
     }
-    input,
-    select {
-        font-size: 15px;
-        padding: 8px 12px;
+
+    input.createGameItem {
+        width: 380px;
     }
 }
-
 
 /* Мобильные устройства */
 
-@media (max-width: 767px) {
-    .create-game-container {
-        margin-top: 80px;
-        font-size: 14px;
-        padding: 0 16px;
+@media (max-width: 576px) {
+    .createGameItem {
+        width: 300px;
     }
-    input,
-    select {
-        width: 100%;
-        font-size: 14px;
-        padding: 8px 10px;
-        margin: 6px 0 12px;
+
+    input.createGameItem {
+        width: 280px;
     }
 }
 
-
-/* Десктоп */
-
-@media (min-width: 1024px) {
-    .create-game-container {
-        font-size: 16px;
-    }
-    input,
-    select {
-        font-size: 16px;
-        padding: 10px 14px;
-    }
-}
