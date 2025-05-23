@@ -12,6 +12,7 @@ const Header = () => {
         navigate('/create-game');
     }, [navigate]);
 
+
     
     return (
         <header className="header">
@@ -19,7 +20,7 @@ const Header = () => {
                 <Link to='/' className="left-section">
                 <img src={logo} alt="Логотип" className="logo-image" />
                 </Link>
-                <p className="logo-text">Planning Poker Game</p>
+                <p className="whiteTextLink">Planning Poker Game</p>
             </div>
 
             <div className="right-section">

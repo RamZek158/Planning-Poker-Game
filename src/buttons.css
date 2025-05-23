@@ -1,4 +1,3 @@
-
 /* Button */
 .btn {
     padding: 0.5rem 1rem;
@@ -7,7 +6,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .btn:hover {
@@ -16,17 +15,28 @@
 }
 
 /* Primary button */
+
 .primary {
-    background-color: var(--accent-color);
+    background-color: var(--primary-color);
     color: var(--text-color);
     border: none;
 }
 
 .primary:hover {
-    background-color: #2980b9;
+    background-color: var(--primary-hover-color);
 }
 
+/* disabled */
+.primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    color: #666;
+}
+
+
 /* Secondary button */
+
 .secondary {
     background-color: transparent;
     color: var(--text-color);
