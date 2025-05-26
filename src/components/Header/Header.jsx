@@ -4,11 +4,13 @@ import axios from 'axios';
 import './Header.css';
 import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router';
+import { useCookies } from 'react-cookie';
 import { googleLogout , useGoogleLogin } from '@react-oauth/google';
 
 
 const Header = () => {
-    const navigate = useNavigate()
+    const [cookies, setCookie, removeCookie] = useCookies(['logged-user-info']);
+    const navigate = useNavigate();
 
     const handleCreateNewGame = React.useCallback(() => {
         navigate('/create-game');
@@ -18,6 +20,7 @@ const Header = () => {
     const login = useGoogleLogin({
         select_account: true,
         onSuccess:  async (tokenResponse) => {
+            console.log('tokenResponse:', tokenResponse);
             console.log('Access Token:', tokenResponse.access_token);
 
             // Fetch user profile info using the access token
@@ -31,9 +34,16 @@ const Header = () => {
                     }
                 );
 
-                console.log('User Info:', userInfo.data);
-                const { name, email } = userInfo.data;
-                alert(`Name: ${name}, Email: ${email}`);
+                const { name, sub, email, picture } = userInfo.data;
+                setCookie('logged-user-info', {
+                    logged_as: 'google',
+                    logged_in: new Date().getTime(),
+                    user_id: sub,
+                    user_name: name,
+                    user_email: email,
+                    picture,
+                    expires_in: 3599 * 1000 + new Date().getTime()
+                });
             } catch (error) {
                 console.error('Failed to fetch user info', error);
             }
