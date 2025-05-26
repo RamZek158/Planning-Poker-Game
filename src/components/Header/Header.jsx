@@ -6,6 +6,7 @@ import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router';
 import { useCookies } from 'react-cookie';
 import { googleLogout , useGoogleLogin } from '@react-oauth/google';
+import { savePlayer } from './../../utils';
 
 
 const Header = () => {
@@ -15,7 +16,6 @@ const Header = () => {
     const handleCreateNewGame = React.useCallback(() => {
         navigate('/create-game');
     }, [navigate]);
-
 
     const login = useGoogleLogin({
         select_account: true,
@@ -44,14 +44,20 @@ const Header = () => {
                     user_picture: picture,
                     expires_in: 3599 * 1000 + new Date().getTime()
                 });
+                savePlayer({
+                    id: sub,
+                    name,
+                    picture,
+                })
             } catch (error) {
                 console.error('Failed to fetch user info', error);
             }
         },
         onError: errorResponse =>  console.error('Login failed:', errorResponse)
     });
-
     
+    
+
     return (
         <header className="header">
             <div className="left-section">
