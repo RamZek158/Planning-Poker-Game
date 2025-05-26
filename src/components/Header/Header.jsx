@@ -41,7 +41,7 @@ const Header = () => {
                     user_id: sub,
                     user_name: name,
                     user_email: email,
-                    picture,
+                    user_picture: picture,
                     expires_in: 3599 * 1000 + new Date().getTime()
                 });
             } catch (error) {
