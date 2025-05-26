@@ -1,22 +1,26 @@
 import React from 'react';
 import { Routes, Route } from 'react-router';
-import RouteWithHeader from './RouteWithHeader'
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import RouteWithHeader from './RouteWithHeader';
 import {
     HomePage,
     CreateGame
 } from './components';
 import './App.css';
 
+const CLIENT_ID = '357030709892-0gb5a39m5gcb1tvfl5nc5eqkf37elcio.apps.googleusercontent.com'
 function App() {
   return (
-  <div className="app">
-    <Routes>
-        <Route path={'/'} element={<RouteWithHeader />}>
-            <Route path={'/'} element={<HomePage />} />
-            <Route path={'/create-game'} element={<CreateGame />} />
-        </Route>
-    </Routes>
-    </div>
+      <GoogleOAuthProvider clientId={CLIENT_ID}>
+          <div className="app">
+              <Routes>
+                  <Route path={'/'} element={<RouteWithHeader />}>
+                      <Route path={'/'} element={<HomePage />} />
+                      <Route path={'/create-game'} element={<CreateGame />} />
+                  </Route>
+              </Routes>
+          </div>
+      </GoogleOAuthProvider>
   );
 }
 

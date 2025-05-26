@@ -1,10 +1,10 @@
 import React from 'react';
-import {useNavigate} from 'react-router';
+import { useNavigate } from 'react-router';
+import axios from 'axios';
 import './Header.css';
 import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router';
-import { useGoogleLogin } from '@react-oauth/google';
-import { useGoogleOneTapLogin } from '@react-oauth/google';
+import { googleLogout , useGoogleLogin } from '@react-oauth/google';
 
 
 const Header = () => {
@@ -15,16 +15,30 @@ const Header = () => {
     }, [navigate]);
 
 
-        useGoogleOneTapLogin({
-        onSuccess: credentialResponse => {
-    console.log(credentialResponse);
-    },
-        onError: () => {
-    console.log('Login Failed');
-    },
-    });
     const login = useGoogleLogin({
-        onSuccess: tokenResponse => console.log(tokenResponse),
+        select_account: true,
+        onSuccess:  async (tokenResponse) => {
+            console.log('Access Token:', tokenResponse.access_token);
+
+            // Fetch user profile info using the access token
+            try {
+                const userInfo = await axios.get(
+                    'https://www.googleapis.com/oauth2/v3/userinfo ',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${tokenResponse.access_token}`,
+                        },
+                    }
+                );
+
+                console.log('User Info:', userInfo.data);
+                const { name, email } = userInfo.data;
+                alert(`Name: ${name}, Email: ${email}`);
+            } catch (error) {
+                console.error('Failed to fetch user info', error);
+            }
+        },
+        onError: errorResponse =>  console.error('Login failed:', errorResponse)
     });
 
     
