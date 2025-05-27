@@ -1,16 +1,18 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
+import {useNavigate} from 'react-router';
 import axios from 'axios';
 import './Header.css';
 import logo from '../../assets/images/logo.png';
-import { Link } from 'react-router';
-import { useCookies } from 'react-cookie';
-import { googleLogout , useGoogleLogin } from '@react-oauth/google';
-import { useState } from 'react';
-import { savePlayer } from './../../utils';
+import {Link} from 'react-router';
+import {useCookies} from 'react-cookie';
+import {googleLogout, useGoogleLogin} from '@react-oauth/google';
+import {useState} from 'react';
+import {savePlayer} from './../../utils';
+import set from "@babel/runtime/helpers/esm/set";
 
 
 const Header = () => {
+    const [menuOpen, setMenuOpen] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['logged-user-info']);
     const user = cookies['logged-user-info'];
     const navigate = useNavigate();
@@ -21,7 +23,7 @@ const Header = () => {
 
     const login = useGoogleLogin({
         select_account: true,
-        onSuccess:  async (tokenResponse) => {
+        onSuccess: async (tokenResponse) => {
             console.log('tokenResponse:', tokenResponse);
             console.log('Access Token:', tokenResponse.access_token);
 
@@ -36,7 +38,7 @@ const Header = () => {
                     }
                 );
 
-                const { name, sub, email, picture } = userInfo.data;
+                const {name, sub, email, picture} = userInfo.data;
                 setCookie('logged-user-info', {
                     logged_as: 'google',
                     logged_in: new Date().getTime(),
@@ -55,45 +57,47 @@ const Header = () => {
                 console.error('Failed to fetch user info', error);
             }
         },
-        onError: errorResponse =>  console.error('Login failed:', errorResponse)
+        onError: errorResponse => console.error('Login failed:', errorResponse)
     });
 
-    const [menuOpen, setMenuOpen] = useState(false);
-    const handleLogout = () => {
-    removeCookie('logged-user-info', { path: '/' });
-    window.location.reload(); // или navigate('/')
-    };
-    
-    
+    const handleLogout = React.useCallback(() => {
+        removeCookie('logged-user-info');
+        setMenuOpen(false);
+    }, [removeCookie, setMenuOpen]);
+
+    const handleMenuOpen = React.useCallback(() => {
+        setMenuOpen(state => !state);
+    }, [setMenuOpen]);
+
 
     return (
         <header className="header">
             <div className="left-section">
                 <Link to='/' className="left-section">
-                <img src={logo} alt="Логотип" className="logo-image" />
+                    <img src={logo} alt="Логотип" className="logo-image"/>
                 </Link>
                 <p className="whiteTextLink">Planning Poker Game</p>
             </div>
 
             <div className="right-section">
                 <div className="auth-buttons">
-
                     <div className="profile-wrapper">
                         {!user ? (
-                        <button className="btn primary" onClick={login}>Зарегистрироваться через Google 🚀</button>
+                            <button className="btn primary" onClick={login}>Зарегистрироваться через Google 🚀</button>
                         ) : (
-                        <>
-                            <button className="btn secondary profile" onClick={() => setMenuOpen(!menuOpen)}>
-                            <img src={user.user_picture} className="user-image" alt="avatar" />
-                            <span className={`arrow ${menuOpen ? 'open' : ''}`}>❯</span>
-                            <span>{user.user_name}</span>
-                            </button>
-                            {menuOpen && (
-                            <div className="menuItem">
-                                <button className="btn secondary profile" onClick={handleLogout}>Выйти 🚪</button>
-                            </div>
-                            )}
-                        </>
+                            <>
+                                <button className="btn secondary profile" onClick={handleMenuOpen}>
+                                    <img src={user.user_picture} referrerPolicy="no-referrer" className="user-image" alt="avatar"/>
+                                    <span className={`arrow ${menuOpen ? 'open' : ''}`}>❯</span>
+                                    <span>{user.user_name}</span>
+                                </button>
+                                {menuOpen && (
+                                    <div className="menuItem">
+                                        <button className="btn secondary menuItemButton" onClick={handleLogout}>Выйти 🚪
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                     <button className="btn secondary" onClick={handleCreateNewGame}>Создать новую игру ✎</button>
