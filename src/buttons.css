@@ -61,6 +61,7 @@
 }
 
 .menuItemButton {
+    background-color: var(--hover-color);
     display: flex;
     align-items: center;
     align-content: center;
@@ -68,4 +69,8 @@
     border: none;
     border-radius: 0 !important;
     gap: 7px;
+}
+
+.menuItemButton:hover {
+    background-color: var(--hover-light);
 }
