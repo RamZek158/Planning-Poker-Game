@@ -49,5 +49,13 @@ module.exports = {
     devServer: {
         open: ['/index.html'],
         historyApiFallback: true,
+        setupMiddlewares: (middlewares, devServer) => {
+            if (!devServer) {
+                throw new Error('webpack-dev-server is not defined');
+            }
+            const api = require('./mock-api'); // Your Express routes file
+            devServer.app.use('/api', api);
+            return middlewares;
+        },
     }
 };

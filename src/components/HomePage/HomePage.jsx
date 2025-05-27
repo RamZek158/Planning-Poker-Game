@@ -1,7 +1,17 @@
 import React from 'react';
 import { PlayingCard } from '../../components';
+import { getUsers, addUser } from '../../api/users/users';
 
 const HomePage = () => {
+
+    React.useEffect(() => {
+        getUsers.then(result => console.log('result', result));
+    }, [getUsers]);
+
+    const handleAddUser = React.useCallback(() => {
+        addUser({id: '01', name: 'testedUser'});
+    }, [addUser]);
+
     return (
         <section className="hero pageContainer">
             <h1>Голосуйте и оценивайте задачи в режиме реального времени</h1>
@@ -21,6 +31,7 @@ const HomePage = () => {
                     <PlayingCard randomCardSuit={3} cardValue="?" />
                 </div>
             </div>
+            <button className="btn primary" onClick={handleAddUser}>add tested user</button>
         </section>
     );
 }
