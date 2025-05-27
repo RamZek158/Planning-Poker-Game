@@ -1,4 +1,5 @@
 /* Button */
+
 .btn {
     padding: 0.5rem 1rem;
     border-radius: 6px;
@@ -14,6 +15,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+
 /* Primary button */
 
 .primary {
@@ -26,7 +28,9 @@
     background-color: var(--primary-hover-color);
 }
 
+
 /* disabled */
+
 .primary:disabled {
     background-color: #ccc;
     cursor: not-allowed;
@@ -45,4 +49,13 @@
 
 .secondary:hover {
     background-color: var(--hover-light);
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    border: none;
+    gap: 7px;
 }

@@ -6,11 +6,13 @@ import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router';
 import { useCookies } from 'react-cookie';
 import { googleLogout , useGoogleLogin } from '@react-oauth/google';
+import { useState } from 'react';
 import { savePlayer } from './../../utils';
 
 
 const Header = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['logged-user-info']);
+    const user = cookies['logged-user-info'];
     const navigate = useNavigate();
 
     const handleCreateNewGame = React.useCallback(() => {
@@ -55,6 +57,12 @@ const Header = () => {
         },
         onError: errorResponse =>  console.error('Login failed:', errorResponse)
     });
+
+    const [menuOpen, setMenuOpen] = useState(false);
+    const handleLogout = () => {
+    removeCookie('logged-user-info', { path: '/' });
+    window.location.reload(); // или navigate('/')
+    };
     
     
 
@@ -69,8 +77,26 @@ const Header = () => {
 
             <div className="right-section">
                 <div className="auth-buttons">
-                    <button className="btn primary" onClick={() => login()}>Зарегистрироваться через Google 🚀</button>
-                    <button className="btn secondary" onClick={handleCreateNewGame}>Начать новую игру</button>
+
+                    <div className="profile-wrapper">
+                        {!user ? (
+                        <button className="btn primary" onClick={login}>Зарегистрироваться через Google 🚀</button>
+                        ) : (
+                        <>
+                            <button className="btn secondary profile" onClick={() => setMenuOpen(!menuOpen)}>
+                            <img src={user.user_picture} className="user-image" alt="avatar" />
+                            <span className={`arrow ${menuOpen ? 'open' : ''}`}>❯</span>
+                            <span>{user.user_name}</span>
+                            </button>
+                            {menuOpen && (
+                            <div className="menuItem">
+                                <button className="btn secondary profile" onClick={handleLogout}>Выйти 🚪</button>
+                            </div>
+                            )}
+                        </>
+                        )}
+                    </div>
+                    <button className="btn secondary" onClick={handleCreateNewGame}>Создать новую игру ✎</button>
                 </div>
             </div>
         </header>

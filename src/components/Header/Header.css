@@ -23,25 +23,28 @@
 }
 
 .logo-image {
-    height: 100px;
-    width: 100px;
+    height: 120px;
+    width: 120px;
     object-fit: contain;
     flex-shrink: 0;
 }
 
-a.whiteTextLink,
-a.whiteTextLink:link,
-a.whiteTextLink:visited,
-a.whiteTextLink:hover,
-a.whiteTextLink:active {
-    text-decoration: none;
-    color: white;
+.user-image {
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    order: 2;
+    padding-left: 5px;
+    object-fit: cover;
+    /* обрезает края изображения, чтобы заполнить всю область */
 }
 
 .whiteTextLink {
     font-size: 1.25em;
+    color: white;
     font-weight: 700;
 }
+
 
 /* Правая секция */
 
@@ -51,10 +54,36 @@ a.whiteTextLink:active {
     gap: 1.25em;
 }
 
+.profile-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+
+/* Выпадающее меню должно быть вне документного потока */
+
+.menuItem {
+    position: absolute;
+    width: 100%;
+    border-radius: 6px;
+}
+
 .auth-buttons {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.75em;
+}
+
+.arrow {
+    font-size: 10px;
+    color: #ffffff;
+    transform: rotate(-90deg);
+    transition: transform 0.3s ease;
+    padding-right: 5px;
+}
+
+.arrow.open {
+    transform: rotate(90deg);
 }
