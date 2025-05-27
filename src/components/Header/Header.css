@@ -84,11 +84,31 @@
 }
 
 @media (max-width: 768px) {
-    .menuItem {
-        position: relative;
-        z-index: 1999;
+    .right-section{
+        width: 100%;
+    }
+   .auth-buttons{
+       width: 100%;
+   }
+    .auth-buttons button{
+        width: 100%;
+    }
+    .profile-wrapper {
+        width: 100%;
     }
 }
 
 @media (max-width: 576px) {
+    .right-section{
+        width: 100%;
+    }
+    .auth-buttons{
+        width: 100%;
+    }
+    .auth-buttons button{
+        width: 100%;
+    }
+    .profile-wrapper {
+        width: 100%;
+    }
 }

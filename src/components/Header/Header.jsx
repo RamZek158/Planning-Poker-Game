@@ -81,6 +81,7 @@ const Header = () => {
 
             <div className="right-section">
                 <div className="auth-buttons">
+                    <button className="btn secondary" onClick={handleCreateNewGame}>Создать новую игру ✎</button>
                     <div className="profile-wrapper">
                         {!user ? (
                             <button className="btn primary" onClick={login}>Зарегистрироваться через Google 🚀</button>
@@ -100,7 +101,6 @@ const Header = () => {
                             </>
                         )}
                     </div>
-                    <button className="btn secondary" onClick={handleCreateNewGame}>Создать новую игру ✎</button>
                 </div>
             </div>
         </header>
