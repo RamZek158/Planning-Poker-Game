@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router';
 import axios from 'axios';
 import './Header.css';
@@ -6,9 +6,7 @@ import logo from '../../assets/images/logo.png';
 import {Link} from 'react-router';
 import {useCookies} from 'react-cookie';
 import {googleLogout, useGoogleLogin} from '@react-oauth/google';
-import {useState} from 'react';
 import {savePlayer} from './../../utils';
-import set from "@babel/runtime/helpers/esm/set";
 
 
 const Header = () => {
