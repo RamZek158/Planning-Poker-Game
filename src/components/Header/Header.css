@@ -97,6 +97,9 @@
     .profile-wrapper {
         width: 100%;
     }
+    .profile {
+        justify-content: center;
+    }
     .menuItem {
         background-color: var(--bg-header-color);
         border-bottom-left-radius: 5px;
@@ -116,5 +119,13 @@
     }
     .profile-wrapper {
         width: 100%;
+    }
+    .profile {
+        justify-content: center;
+    }
+    .menuItem {
+        background-color: var(--bg-header-color);
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
     }
 }
