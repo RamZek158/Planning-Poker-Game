@@ -15,6 +15,5 @@ const GameRoom = () => {
   );
 };
 
-
 GameRoom.displayName = 'GameRoom';
 export default GameRoom;

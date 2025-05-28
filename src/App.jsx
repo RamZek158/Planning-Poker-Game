@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import RouteWithHeader from './RouteWithHeader';
@@ -20,7 +20,7 @@ function App() {
                       <Route path={'/'} element={<RouteWithHeader />}>
                           <Route path={'/'} element={<HomePage />} />
                           <Route path={'/create-game'} element={<CreateGame />} />
-                          <Route path={'/GameRoom'} element={<GameRoom />} />
+                          <Route path={'/game/:gameId'} element={<GameRoom />} />
                       </Route>
                   </Routes>
               </div>
