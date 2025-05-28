@@ -1,7 +1,9 @@
 import React from 'react';
 import './CreateGame.css';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie'; // <-- добавляем
 import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from '../../utils';
+import profileIcon from '../../assets/images/profile-icon.png';
 
 const CreateGame = () => {
   const [gameName, setGameName] = React.useState('');
@@ -11,6 +13,7 @@ const CreateGame = () => {
   const [error, setError] = React.useState('');
 
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(['logged-user-info']); // <-- используем те же куки, что в Header.jsx
 
   const t_shirt_system_string = T_SHIRT_VOTING_SYSTEM.join(', ');
   const fibonacci_system_string = FIBONACCI_VOTING_SYSTEM.join(', ');
@@ -23,8 +26,9 @@ const CreateGame = () => {
     setGameName(event.target.value);
   }, []);
 
+  // Проверяем, есть ли пользователь в куках
   const isUserRegistered = () => {
-    return !!localStorage.getItem("user_id");
+    return !!cookies['logged-user-info'];
   };
 
   const generateGameId = () => {
@@ -39,13 +43,21 @@ const CreateGame = () => {
 
     const userId = "anon_" + Math.random().toString(36).substring(2, 10);
 
-    localStorage.setItem("logged_as", "anonymous");
-    localStorage.setItem("user_id", userId);
-    localStorage.setItem("user_name", customName);
-    localStorage.setItem("user_email", "undefined");
-    localStorage.setItem("user_picture", "undefined");
+    // Сохраняем анонимного пользователя в куки
+    const userInfo = {
+      logged_as: 'anonymous',
+      user_id: userId,
+      user_name: customName,
+      user_email: undefined,
+      user_picture: profileIcon,
+      logged_in: new Date().getTime(),
+    };
 
-    // Закрываем модалку и создаём игру
+    setCookie('logged-user-info', userInfo, {
+      path: '/',
+      maxAge: 3600, // 1 час жизни
+    });
+
     setIsModalOpen(false);
     const gameId = generateGameId();
     navigate(`/game/${gameId}`);
