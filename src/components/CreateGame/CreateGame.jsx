@@ -34,7 +34,7 @@ const CreateGame = () => {
             <button
                 className="btn primary createGameItem"
                 disabled={!gameName}
-            >Начать игру
+            >Начать игру 🎮
             </button>
         </div>
       </div>
