@@ -1,16 +1,16 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 const GameRoom = () => {
-  const { id } = useParams(); // Получаем gameId из URL
+    let params = useParams();
 
-  // Здесь можно получить имя пользователя из localStorage
-  const userName = localStorage.getItem('user_name');
+    console.log('GameRoom params: ', params);
+
 
   return (
     <div>
-      <h1>Игра с ID: {id}</h1>
-      <p>Добро пожаловать, {userName || 'Анонимный игрок'}!</p>
+      <h1>Игра с ID</h1>
+      <p>Добро пожаловать</p>
     </div>
   );
 };

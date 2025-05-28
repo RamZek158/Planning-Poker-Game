@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router';
 import { CookiesProvider } from 'react-cookie';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import RouteWithHeader from './RouteWithHeader';
