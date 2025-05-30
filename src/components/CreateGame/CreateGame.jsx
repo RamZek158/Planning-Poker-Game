@@ -4,14 +4,16 @@ import { useNavigate } from 'react-router';
 import { useCookies } from 'react-cookie'; // <-- добавляем
 import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from '../../utils';
 import profileIcon from '../../assets/images/profile-icon.png';
+import { useGameNameContext }  from '../../providers/GameNameProvider';
 
 const CreateGame = () => {
-    const [gameName, setGameName] = React.useState('');
+    //const [gameName, setGameName] = React.useState('');
     const [votingType, setVotingType] = React.useState(FIBONACCI_VOTING_SYSTEM);
     const [modalOpen, setModalOpen] = React.useState(false);
     const [gameId, setGameId] = React.useState('');
     const [customName, setCustomName] = React.useState('');
     const [error, setError] = React.useState('');
+    const { gameName, setGameName } = useGameNameContext();
 
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['logged-user-info']); // <-- используем те же куки, что в Header.jsx
@@ -120,14 +122,16 @@ const CreateGame = () => {
                             }}
                         />
                         {error && <p style={{color: 'red'}}>{error}</p>}
-                        <button
-                            className="btn secondary"
-                            onClick={handleLogin}
-                            disabled={!customName.trim()}
-                            style={{ marginTop: '10px' }}
-                        >
-                            Войти
-                        </button>
+                        <div>
+                            <button
+                                className="btn primary"
+                                onClick={handleLogin}
+                                disabled={!customName.trim()}
+                                style={{ marginTop: '10px' }}
+                            >
+                                Войти
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

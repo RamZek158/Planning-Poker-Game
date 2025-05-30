@@ -1,18 +1,20 @@
 import React from 'react';
 import { PlayingCard } from '../../components';
 import { useParams } from 'react-router';
+import {useGameNameContext} from "../../providers/GameNameProvider";
 
 const GameRoom = () => {
-    let params = useParams();
+    const params = useParams();
+    const { gameName } = useGameNameContext();
 
     console.log('GameRoom params: ', params);
+    console.log('GameRoom gameName: ', gameName);
 
 
   return (
     <section className="hero pageContainer">
          <div>
-            <h1>Игра с ID</h1>
-            <p>Добро пожаловать</p>
+            <h1>{gameName}</h1>
         </div>
       <div style={{display: 'flex', margin: '10px'}}>
             <div style={{margin: '10px', padding: '10px'}}>
