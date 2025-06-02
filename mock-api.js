@@ -7,9 +7,9 @@ router.get('/users', (req, res) => {
 });
 
 router.post('/addUser', (req, res) => {
-    const jsonData = JSON.stringify(res.body);
-    console.log('jsonData: ', jsonData)
-    res.send(res.body);
+    //const jsonData = JSON.stringify(res.body);
+    console.log('res.body: ', res.body);
+    res.send({});
 });
 
 module.exports = router;

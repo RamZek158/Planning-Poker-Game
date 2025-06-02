@@ -1,1 +1,4 @@
-export { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from './constants';
+export { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM }
+from './constants';
+export { getPlayers, savePlayer }
+from './LocalStorageUtils';
