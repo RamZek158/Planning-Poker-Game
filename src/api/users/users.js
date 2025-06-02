@@ -12,3 +12,12 @@ export const addUser = (user) => fetch('/api/addUser', {
 })
     .then((res) => res.json())
     .then((data) => data);
+
+export const deleteUser = (userId) => fetch(`/api/users?id=${userId}`, {
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'text/html; charset=utf-8'
+    }
+})
+    .then((res) => res.json())
+    .then((data) => data);

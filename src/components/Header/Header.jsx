@@ -6,7 +6,7 @@ import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router';
 import { useCookies } from 'react-cookie';
 import {googleLogout, useGoogleLogin} from '@react-oauth/google';
-import { addUser } from '../../api/users/users';
+import { addUser, deleteUser } from '../../api/users/users';
 
 
 const Header = () => {
@@ -63,9 +63,12 @@ const Header = () => {
     });
 
     const handleLogout = React.useCallback(() => {
-        removeCookie('logged-user-info');
+        if(user.user_id){
+            deleteUser(user.user_id);
+            removeCookie('logged-user-info');
+        }
         setMenuOpen(false);
-    }, [removeCookie, setMenuOpen]);
+    }, [user, removeCookie, setMenuOpen]);
 
     const handleMenuOpen = React.useCallback(() => {
         setMenuOpen(state => !state);
