@@ -1,4 +1,5 @@
 const path = require('path');
+const express = require('express');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const prod = process.env.NODE_ENV === 'production';
 
@@ -49,5 +50,16 @@ module.exports = {
     devServer: {
         open: ['/index.html'],
         historyApiFallback: true,
+        setupMiddlewares: (middlewares, devServer) => {
+            if (!devServer) {
+                throw new Error('webpack-dev-server is not defined');
+            }
+            devServer.app.use(express.json());
+
+            const api = require('./mock-api'); // Your Express routes file
+            devServer.app.use('/api', api);
+
+            return middlewares;
+        },
     }
 };

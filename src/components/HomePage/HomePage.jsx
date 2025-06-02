@@ -1,7 +1,13 @@
 import React from 'react';
 import { PlayingCard } from '../../components';
+import { getUsers } from '../../api/users/users';
 
 const HomePage = () => {
+
+    React.useEffect(() => {
+        getUsers.then(result => console.log('result', result));
+    }, [getUsers]);
+
     return (
         <section className="hero pageContainer">
             <h1>Голосуйте и оценивайте задачи в режиме реального времени</h1>
