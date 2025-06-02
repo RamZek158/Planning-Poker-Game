@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie'; // <-- добавляем
 import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from '../../utils';
 import profileIcon from '../../assets/images/profile-icon.png';
 import { useGameNameContext }  from '../../providers/GameNameProvider';
+import { addUser } from '../../api/users/users';
 
 const CreateGame = () => {
     //const [gameName, setGameName] = React.useState('');
@@ -41,9 +42,10 @@ const CreateGame = () => {
         }
 
         // Сохраняем анонимного пользователя в куки
+        const userId = `usr_${Math.random().toString(36).substring(2, 10)}`;
         const userInfo = {
             logged_as: 'anonymous',
-            user_id: `usr_${Math.random().toString(36).substring(2, 10)}`,
+            user_id: userId,
             user_name: customName,
             user_email: undefined,
             user_picture: profileIcon,
@@ -52,6 +54,11 @@ const CreateGame = () => {
         };
 
         setCookie('logged-user-info', userInfo);
+        addUser({
+                    id: userId,
+                    name: customName,
+                    picture: profileIcon
+                });
         setModalOpen(false);
         setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
     }, [customName, setCookie, setGameId, setModalOpen]);
