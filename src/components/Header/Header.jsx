@@ -3,10 +3,10 @@ import {useNavigate} from 'react-router';
 import axios from 'axios';
 import './Header.css';
 import logo from '../../assets/images/logo.png';
-import {Link} from 'react-router';
-import {useCookies} from 'react-cookie';
+import { Link } from 'react-router';
+import { useCookies } from 'react-cookie';
 import {googleLogout, useGoogleLogin} from '@react-oauth/google';
-import {savePlayer} from './../../utils';
+import { addUser } from '../../api/users/users';
 
 
 const Header = () => {
@@ -19,11 +19,15 @@ const Header = () => {
         navigate('/create-game');
     }, [navigate]);
 
+    const handleAddUser = React.useCallback(() => {
+
+    }, [addUser]);
+
     const login = useGoogleLogin({
         select_account: true,
         onSuccess: async (tokenResponse) => {
-            console.log('tokenResponse:', tokenResponse);
-            console.log('Access Token:', tokenResponse.access_token);
+            // console.log('tokenResponse:', tokenResponse);
+            // console.log('Access Token:', tokenResponse.access_token);
 
             // Fetch user profile info using the access token
             try {
@@ -46,11 +50,11 @@ const Header = () => {
                     user_picture: picture,
                     expires_in: 3599 * 1000 + new Date().getTime()
                 });
-                savePlayer({
+                await addUser({
                     id: sub,
                     name,
-                    picture,
-                })
+                    picture
+                });
             } catch (error) {
                 console.error('Failed to fetch user info', error);
             }
