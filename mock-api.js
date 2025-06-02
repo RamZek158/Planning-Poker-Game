@@ -13,7 +13,7 @@ router.post('/addUser', (req, res) => {
     const newUser = req.body;
     const usersFromFile = JSON.parse(fs.readFileSync('./tmp/users.json', 'utf8'));
     const existedUser = usersFromFile.find(user => user.id === newUser.id)
-    // console.log('existedUser: ', existedUser);
+        // console.log('existedUser: ', existedUser);
     const updatedUsers = existedUser ? usersFromFile : [...usersFromFile, newUser];
 
     let jsonString = JSON.stringify(updatedUsers, null, 4);
@@ -23,13 +23,13 @@ router.post('/addUser', (req, res) => {
     res.json(updatedUsers);
 });
 
-router.delete ('/users', (req, res) => {
+router.delete('/users', (req, res) => {
     const userId = req.query.id;
-    if(userId) {
+    if (userId) {
         const usersFromFile = JSON.parse(fs.readFileSync('./tmp/users.json', 'utf8'));
         const updatedUsers = usersFromFile.filter(user => user.id !== userId);
 
-       // console.log('userId: ', userId);
+        // console.log('userId: ', userId);
         let jsonString = JSON.stringify(updatedUsers, null, 4);
         fs.writeFileSync('./tmp/users.json', jsonString);
 

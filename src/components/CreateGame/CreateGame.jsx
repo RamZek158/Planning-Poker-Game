@@ -6,6 +6,7 @@ import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from '../../utils';
 import profileIcon from '../../assets/images/profile-icon.png';
 import { useGameNameContext }  from '../../providers/GameNameProvider';
 import { addUser } from '../../api/users/users';
+// import { gameId, gameName, votingSyst } from '../../api/gameSettings/gameSettings';
 
 const CreateGame = () => {
     //const [gameName, setGameName] = React.useState('');
@@ -59,6 +60,11 @@ const CreateGame = () => {
                     name: customName,
                     picture: profileIcon
                 });
+        // gameName({
+        //             gameName
+        //         });
+
+            
         setModalOpen(false);
         setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
     }, [customName, setCookie, setGameId, setModalOpen]);
