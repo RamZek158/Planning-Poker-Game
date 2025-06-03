@@ -64,14 +64,14 @@ const CreateGame = () => {
         setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
         saveGameSettings({
             id: gameId,
-            userId: userId,
+            userId,
             name: gameName,
             votingType
 
         });
         setModalOpen(false);
 
-    }, [customName, setCookie, setGameId, gameId, setModalOpen, gameName, votingType, addUser]);
+    }, [customName, setCookie, setGameId, gameId, userId, setModalOpen, gameName, votingType, addUser]);
 
     const handleCreateGame = React.useCallback(() => {
         if (!gameName.trim()) return;
@@ -81,7 +81,16 @@ const CreateGame = () => {
         } else {
             setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
         }
-    }, [gameName, setModalOpen, navigate, setGameId]);
+
+        setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
+        saveGameSettings({
+            id: gameId,
+            userId,
+            name: gameName,
+            votingType
+
+        });
+    }, [gameName, setModalOpen, navigate, gameId, userId, votingType, setGameId]);
 
     React.useEffect(() => {
         if (gameId) {

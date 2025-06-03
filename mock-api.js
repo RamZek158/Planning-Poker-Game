@@ -40,6 +40,74 @@ router.delete('/users', (req, res) => {
 
 });
 
-//saveGameSettings
+router.post('/save-game-settings', (req, res) => {
+    const newSettings = req.body;
+
+    // Чтение текущих данных из файла
+    const raw = fs.readFileSync('./tmp/gameSettings.json', 'utf8');
+    let settingsList = [];
+
+    try {
+        settingsList = JSON.parse(raw);
+        if (!Array.isArray(settingsList)) {
+            settingsList = [settingsList]; // если это один объект
+        }
+    } catch (e) {
+        settingsList = [];
+    }
+
+    // Обновляем или добавляем новые настройки по `id`
+    const existingIndex = settingsList.findIndex(s => s.id === newSettings.id);
+
+    if (existingIndex > -1) {
+        settingsList[existingIndex] = newSettings; // обновляем
+    } else {
+        settingsList.push(newSettings); // добавляем
+    }
+
+    // Сохраняем обратно в файл
+    fs.writeFileSync('./tmp/gameSettings.json', JSON.stringify(settingsList, null, 4));
+
+    res.json(newSettings);
+});
+
+// === ПОЛУЧЕНИЕ НАСТРОЕК ИГРЫ ===
+router.get('/game-settings', (req, res) => {
+    const raw = fs.readFileSync('./tmp/gameSettings.json', 'utf8');
+
+    try {
+        const data = JSON.parse(raw);
+        res.json(data);
+    } catch (e) {
+        res.status(500).send('Ошибка чтения файла настроек игры');
+    }
+});
+
+// === УДАЛЕНИЕ НАСТРОЕК ИГРЫ ===
+router.delete('/game-settings', (req, res) => {
+    const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).send('ID не указан');
+    }
+
+    const raw = fs.readFileSync('./tmp/gameSettings.json', 'utf8');
+    let settingsList = [];
+
+    try {
+        settingsList = JSON.parse(raw);
+        if (!Array.isArray(settingsList)) {
+            settingsList = [settingsList];
+        }
+    } catch (e) {
+        return res.status(500).send('Ошибка чтения файла');
+    }
+
+    const updatedList = settingsList.filter(s => s.id !== id);
+
+    fs.writeFileSync('./tmp/gameSettings.json', JSON.stringify(updatedList, null, 4));
+
+    res.json({ success: true, message: `Настройки игры ${id} удалены` });
+});
 
 module.exports = router;
