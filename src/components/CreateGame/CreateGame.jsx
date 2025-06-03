@@ -1,12 +1,12 @@
 import React from 'react';
 import './CreateGame.css';
-import { useNavigate } from 'react-router';
-import { useCookies } from 'react-cookie'; // <-- добавляем
-import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from '../../utils';
+import {useNavigate} from 'react-router';
+import {useCookies} from 'react-cookie'; // <-- добавляем
+import {T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM} from '../../utils';
 import profileIcon from '../../assets/images/profile-icon.png';
-import { useGameNameContext }  from '../../providers/GameNameProvider';
-import { addUser } from '../../api/users/users';
-// import { gameId, gameName, votingSyst } from '../../api/gameSettings/gameSettings';
+import {useGameNameContext} from '../../providers/GameNameProvider';
+import {addUser} from '../../api/users/users';
+import {saveGameSettings} from '../../api/gameSettings/gameSettings';
 
 const CreateGame = () => {
     //const [gameName, setGameName] = React.useState('');
@@ -15,7 +15,7 @@ const CreateGame = () => {
     const [gameId, setGameId] = React.useState('');
     const [customName, setCustomName] = React.useState('');
     const [error, setError] = React.useState('');
-    const { gameName, setGameName } = useGameNameContext();
+    const {gameName, setGameName} = useGameNameContext();
 
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['logged-user-info']); // <-- используем те же куки, что в Header.jsx
@@ -56,18 +56,22 @@ const CreateGame = () => {
 
         setCookie('logged-user-info', userInfo);
         addUser({
-                    id: userId,
-                    name: customName,
-                    picture: profileIcon
-                });
-        // gameName({
-        //             gameName
-        //         });
+            id: userId,
+            name: customName,
+            picture: profileIcon
+        });
 
-            
-        setModalOpen(false);
         setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-    }, [customName, setCookie, setGameId, setModalOpen]);
+        saveGameSettings({
+            id: gameId,
+            userId: userId,
+            name: gameName,
+            votingType
+
+        });
+        setModalOpen(false);
+
+    }, [customName, setCookie, setGameId, gameId, setModalOpen, gameName, votingType, addUser]);
 
     const handleCreateGame = React.useCallback(() => {
         if (!gameName.trim()) return;
@@ -140,7 +144,7 @@ const CreateGame = () => {
                                 className="btn primary"
                                 onClick={handleLogin}
                                 disabled={!customName.trim()}
-                                style={{ marginTop: '10px' }}
+                                style={{marginTop: '10px'}}
                             >
                                 Войти
                             </button>

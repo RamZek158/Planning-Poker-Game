@@ -40,4 +40,6 @@ router.delete('/users', (req, res) => {
 
 });
 
+//saveGameSettings
+
 module.exports = router;
