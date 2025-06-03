@@ -1,21 +1,38 @@
-import React from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { PlayingCard } from '../../components';
 import { useParams } from 'react-router';
 import {useGameNameContext} from "../../providers/GameNameProvider";
+import {saveGameSettings} from '../../api/gameSettings/gameSettings';
 
-const GameRoom = () => {
-    const params = useParams();
-    const { gameName } = useGameNameContext();
+export const getGameSettings = () => {
+  return fetch('/api/game-settings')
+    .then((res) => res.json())
+    .then((data) => data);
+};
 
-    console.log('GameRoom params: ', params);
-    console.log('GameRoom gameName: ', gameName);
+function GameRoom() {
+  const [gameName, setGameName] = useState('Загрузка...');
 
+  useEffect(() => {
+    getGameSettings()
+      .then(data => {
+        if (data?.name) {
+          setGameName(data.name);
+        } else {
+          setGameName('Без названия');
+        }
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки:', err);
+        setGameName('Ошибка');
+      });
+  }, []);
 
   return (
     <section className="hero pageContainer">
-         <div>
-            <h1>{gameName}</h1>
-        </div>
+      <div>
+        <h1>Игра: {gameName}</h1>
+      </div>
       <div style={{display: 'flex', margin: '10px'}}>
             <div style={{margin: '10px', padding: '10px'}}>
                 <PlayingCard randomCardSuit={0} cardValue="L" />
