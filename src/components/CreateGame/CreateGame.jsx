@@ -61,38 +61,30 @@ const CreateGame = () => {
             name: customName,
             picture: profileIcon
         });
-
         setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-        saveGameSettings({
-            id: gameId,
-            userId,
-            name: gameName,
-            votingType
-
-        });
         setModalOpen(false);
 
     }, [customName, setCookie, setGameId, gameId, setModalOpen, gameName, votingType, addUser, saveGameSettings]);
 
     const handleCreateGame = React.useCallback(() => {
         if (!gameName.trim()) return;
-        console.log('isUserRegistered:', isUserRegistered())
+
         if (!isUserRegistered()) {
             setModalOpen(true);
         } else {
             setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-             saveGameSettings({
-            id: gameId,
-            userId: user.user_id,
-            name: gameName,
-            votingType
-
-        });
       } 
     }, [gameName, setModalOpen, navigate, gameId, user, votingType, setGameId, saveGameSettings]);
 
     React.useEffect(() => {
         if (gameId) {
+            saveGameSettings({
+                id: gameId,
+                userId: user.user_id,
+                name: gameName,
+                votingType
+
+            });
             navigate(`/game/${gameId}`);
         }
     }, [gameId])

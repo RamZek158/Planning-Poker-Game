@@ -1,5 +1,4 @@
 export const saveGameSettings = (gameSettings) => {
-    console.log('gameSettings: ', gameSettings);
     return fetch('/api/save-game-settings', {
             method: 'POST',
             headers: {

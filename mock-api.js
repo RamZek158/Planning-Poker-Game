@@ -44,30 +44,8 @@ router.delete('/users', (req, res) => {
 router.post('/save-game-settings', (req, res) => {
     const newSettings = req.body;
 
-    // Чтение текущих данных из файла
-    const raw = fs.readFileSync('./tmp/gameSettings.json', 'utf8');
-    let settingsList = [];
-
-    try {
-        settingsList = JSON.parse(raw);
-        if (!Array.isArray(settingsList)) {
-            settingsList = [settingsList]; // если это один объект
-        }
-    } catch (e) {
-        settingsList = [];
-    }
-
-    // Обновляем или добавляем новые настройки по `id`
-    const existingIndex = settingsList.findIndex(s => s.id === newSettings.id);
-
-    if (existingIndex > -1) {
-        settingsList[existingIndex] = newSettings; // обновляем
-    } else {
-        settingsList.push(newSettings); // добавляем
-    }
-
-    // Сохраняем обратно в файл
-    fs.writeFileSync('./tmp/gameSettings.json', JSON.stringify(settingsList, null, 4));
+    // Сохраняем в файл
+    fs.writeFileSync('./tmp/gameSettings.json', JSON.stringify(newSettings, null, 4));
 
     res.json(newSettings);
 });
