@@ -1,11 +1,12 @@
 export const saveGameSettings = (gameSettings) => {
+    console.log('gameSettings: ', gameSettings);
     return fetch('/api/save-game-settings', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: JSON.stringify(gameSettings)
-    })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+            },
+            body: JSON.stringify(gameSettings)
+        })
         .then((res) => res.json())
         .then((data) => data);
 };
@@ -27,11 +28,11 @@ export const getGameSettings = () => {
  */
 export const deleteGameSettings = (gameId) => {
     return fetch(`/api/game-settings?id=${gameId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-        },
-    })
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+            },
+        })
         .then((response) => {
             if (!response.ok) {
                 throw new Error('Не удалось удалить настройки игры');

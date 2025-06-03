@@ -19,6 +19,7 @@ const CreateGame = () => {
 
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['logged-user-info']); // <-- используем те же куки, что в Header.jsx
+     const user = cookies['logged-user-info'];
 
     const t_shirt_system_string = T_SHIRT_VOTING_SYSTEM.join(', ');
     const fibonacci_system_string = FIBONACCI_VOTING_SYSTEM.join(', ');
@@ -71,26 +72,24 @@ const CreateGame = () => {
         });
         setModalOpen(false);
 
-    }, [customName, setCookie, setGameId, gameId, setModalOpen, gameName, votingType, addUser]);
+    }, [customName, setCookie, setGameId, gameId, setModalOpen, gameName, votingType, addUser, saveGameSettings]);
 
     const handleCreateGame = React.useCallback(() => {
         if (!gameName.trim()) return;
-
+        console.log('isUserRegistered:', isUserRegistered())
         if (!isUserRegistered()) {
             setModalOpen(true);
         } else {
             setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-        }
-
-        setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-        saveGameSettings({
+             saveGameSettings({
             id: gameId,
-            userId: handleAddUser,
+            userId: user.user_id,
             name: gameName,
             votingType
 
         });
-    }, [gameName, setModalOpen, navigate, handleAddUser, gameId, votingType, setGameId]);
+      } 
+    }, [gameName, setModalOpen, navigate, gameId, user, votingType, setGameId, saveGameSettings]);
 
     React.useEffect(() => {
         if (gameId) {
