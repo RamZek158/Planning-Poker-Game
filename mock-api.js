@@ -40,6 +40,7 @@ router.delete('/users', (req, res) => {
 
 });
 
+//gameSettings
 router.post('/save-game-settings', (req, res) => {
     const newSettings = req.body;
 
