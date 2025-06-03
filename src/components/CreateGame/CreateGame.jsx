@@ -83,14 +83,14 @@ const CreateGame = () => {
         }
 
         setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-        // saveGameSettings({
-        //     id: gameId,
-        //     userId,
-        //     name: gameName,
-        //     votingType
+        saveGameSettings({
+            id: gameId,
+            userId: handleAddUser,
+            name: gameName,
+            votingType
 
-        // });
-    }, [gameName, setModalOpen, navigate, gameId, votingType, setGameId]);
+        });
+    }, [gameName, setModalOpen, navigate, handleAddUser, gameId, votingType, setGameId]);
 
     React.useEffect(() => {
         if (gameId) {
