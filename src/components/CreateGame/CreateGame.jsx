@@ -23,7 +23,6 @@ const CreateGame = () => {
     const fibonacci_system_string = FIBONACCI_VOTING_SYSTEM.join(', ');
 
     const handleVotingTypeChange = React.useCallback((event) => {
-        console.log('event.target.value: ', event.target.value)
         setVotingType(event.target.value);
     }, []);
 
