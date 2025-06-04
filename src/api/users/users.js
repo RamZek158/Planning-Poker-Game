@@ -1,4 +1,4 @@
-export const getUsers = fetch('/api/users', { method: 'GET' })
+export const getUsers = () => fetch('/api/users', { method: 'GET' })
     .then((res) => res.json())
     .then((data) => data);
 

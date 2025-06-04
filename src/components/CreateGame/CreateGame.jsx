@@ -4,18 +4,16 @@ import {useNavigate} from 'react-router';
 import {useCookies} from 'react-cookie'; // <-- добавляем
 import {T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM} from '../../utils';
 import profileIcon from '../../assets/images/profile-icon.png';
-import {useGameNameContext} from '../../providers/GameNameProvider';
 import {addUser} from '../../api/users/users';
 import {saveGameSettings} from '../../api/gameSettings/gameSettings';
 
 const CreateGame = () => {
-    //const [gameName, setGameName] = React.useState('');
+    const [gameName, setGameName] = React.useState('');
     const [votingType, setVotingType] = React.useState(FIBONACCI_VOTING_SYSTEM);
     const [modalOpen, setModalOpen] = React.useState(false);
     const [gameId, setGameId] = React.useState('');
     const [customName, setCustomName] = React.useState('');
     const [error, setError] = React.useState('');
-    const {gameName, setGameName} = useGameNameContext();
 
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['logged-user-info']); // <-- используем те же куки, что в Header.jsx
@@ -25,6 +23,7 @@ const CreateGame = () => {
     const fibonacci_system_string = FIBONACCI_VOTING_SYSTEM.join(', ');
 
     const handleVotingTypeChange = React.useCallback((event) => {
+        console.log('event.target.value: ', event.target.value)
         setVotingType(event.target.value);
     }, []);
 
@@ -104,7 +103,6 @@ const CreateGame = () => {
                 <select
                     className="createGameItem"
                     onChange={handleVotingTypeChange}
-                    value={votingType}
                 >
                     <option value={FIBONACCI_VOTING_SYSTEM}>
                         {`Modified Fibonacci (${fibonacci_system_string})`}
