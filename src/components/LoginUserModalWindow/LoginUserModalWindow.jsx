@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCookies } from "react-cookie";
+import { addUser } from "../../api/users/users";
+import profileIcon from "../../assets/images/profile-icon.png";
+import "./LoginUserModalWindow.css";
 
-const LoginUserModalWindow = ({ onClose, onChange }) => {
-	// setCookie('logged-user-info', userInfo, { path: '/' });
+const LoginUserModalWindow = ({ onClose }) => {
+	const [customName, setCustomName] = useState("");
+	const [cookies, setCookie] = useCookies(["logged-user-info"]);
 
 	const handleChangeInput = React.useCallback(
-		(event) => {
-			onChange(event.target.value);
+		(e) => {
+			setCustomName(e.target.value);
 		},
-		[onChange]
+		[setCustomName]
 	);
 
-	const handleLoginUser = React.useCallback(() => {
+	const handleLogin = React.useCallback(() => {
 		// Сохраняем анонимного пользователя в куки
 		const userId = `usr_${Math.random().toString(36).substring(2, 10)}`;
 		const userInfo = {
@@ -30,12 +34,15 @@ const LoginUserModalWindow = ({ onClose, onChange }) => {
 			name: customName,
 			picture: profileIcon,
 		});
-		nClose();
-	}, [onClose]);
+		onClose();
+	}, [onClose, setCookie, addUser, customName]);
 
 	return (
 		<div className="modal-overlay">
 			<div className="modal-content">
+				{/* <button className="modal-close" onClick={onClose}>
+					&times;
+				</button> */}
 				<h3>Введите ваше имя</h3>
 				<input type="text" placeholder="Ваше имя" value={customName} onChange={handleChangeInput} />
 				<div>

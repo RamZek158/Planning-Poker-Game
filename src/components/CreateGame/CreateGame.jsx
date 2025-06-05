@@ -3,8 +3,6 @@ import "./CreateGame.css";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router";
 import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from "../../utils";
-import profileIcon from "../../assets/images/profile-icon.png";
-import { addUser } from "../../api/users/users";
 import { saveGameSettings } from "../../api/gameSettings/gameSettings";
 import LoginUserModalWindow from "../LoginUserModalWindow/LoginUserModalWindow";
 
@@ -12,19 +10,18 @@ const CreateGame = () => {
 	const [gameName, setGameName] = React.useState("");
 	const [votingType, setVotingType] = React.useState(FIBONACCI_VOTING_SYSTEM);
 	const [modalOpen, setModalOpen] = React.useState(false);
-	const [customName, setCustomName] = React.useState("");
 	const [gameId, setGameId] = React.useState("");
-	const [error, setError] = React.useState("");
 
 	const navigate = useNavigate();
-	const [cookies, setCookie] = useCookies(["logged-user-info"]); // <-- используем те же куки, что в Header.jsx
+	const [cookies] = useCookies(["logged-user-info"]); // <-- используем те же куки, что в Header.jsx
 	const user = cookies["logged-user-info"];
 
 	const t_shirt_system_string = T_SHIRT_VOTING_SYSTEM.join(", ");
 	const fibonacci_system_string = FIBONACCI_VOTING_SYSTEM.join(", ");
 
 	const handleVotingTypeChange = React.useCallback((event) => {
-		setVotingType(event.target.value);
+		const newVotingType = event.target.value.split(",");
+		setVotingType(newVotingType);
 	}, []);
 
 	const handleChangeGameName = React.useCallback((event) => {
@@ -36,15 +33,6 @@ const CreateGame = () => {
 		return !!cookies["logged-user-info"];
 	};
 
-	const handleLogin = React.useCallback(() => {
-		if (!customName.trim()) {
-			setError("Поле не может быть пустым");
-			return;
-		}
-		setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
-		setModalOpen(false);
-	}, [customName, setCookie, setGameId, gameId, setModalOpen, gameName, votingType, addUser, saveGameSettings]);
-
 	const handleCreateGame = React.useCallback(() => {
 		if (!gameName.trim()) return;
 
@@ -55,16 +43,10 @@ const CreateGame = () => {
 		}
 	}, [gameName, setModalOpen, setGameId]);
 
-	const handleChangeCustomName = React.useCallback(
-		(name) => {
-			setCustomName(name);
-		},
-		[setCustomName]
-	);
-
 	const handleCloseModalWindow = React.useCallback(() => {
 		setModalOpen(false);
-	}, [setModalOpen]);
+		setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
+	}, [setModalOpen, setGameId]);
 
 	React.useEffect(() => {
 		if (gameId) {
@@ -96,7 +78,7 @@ const CreateGame = () => {
 			</div>
 
 			{/* Модальное окно */}
-			{modalOpen && <LoginUserModalWindow onClose={handleCloseModalWindow} onChange={handleChangeCustomName} customName={customName} />}
+			{modalOpen && <LoginUserModalWindow onClose={handleCloseModalWindow} />}
 		</section>
 	);
 };
