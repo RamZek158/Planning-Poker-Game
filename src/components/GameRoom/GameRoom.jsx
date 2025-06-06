@@ -16,6 +16,7 @@ function GameRoom() {
 	const [users, setUsers] = React.useState([]);
 	const [modalOpen, setModalOpen] = React.useState(false);
 	const [gameId, setGameId] = React.useState("");
+	const [showToast, setShowToast] = useState(false);
 
 	const [cookies] = useCookies(["logged-user-info"]); // <-- используем те же куки, что в Header.jsx
 	const user = cookies["logged-user-info"];
@@ -31,7 +32,6 @@ useEffect(() => {
 const handleLogin = () => {
     setModalOpen(false); // закрываем модалку после входа
 };
-
 
 	
 	useEffect(() => {
@@ -56,8 +56,31 @@ const handleLogin = () => {
 			});
 	}, []);
 
+
+const copyLink = () => {
+    const url = window.location.href;
+	navigator.clipboard.writeText(url)
+    .then(() => {
+        setShowToast(true);
+        setTimeout(() => {
+        setShowToast(false);
+        }, 3000);
+    })
+    .catch(err => {
+        console.error('Ошибка при копировании ссылки:', err);
+    });
+};
+
 	return (
 		<section className="hero pageContainer">
+	<div className="copy-container">
+    	<button onClick={copyLink} className="btn primary invite">
+        	Пригласить участников 
+    	</button>
+    	<div className={`toast ${showToast ? 'show' : ''}`}>
+        	🔗 Ссылка скопирована!
+    	</div>
+    </div>
 			<div>
 				<h1>Задача: {gameName}</h1>
 			</div>

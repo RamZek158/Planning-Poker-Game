@@ -21,3 +21,32 @@ transform:
     rotateZ(3deg);    /* Поворачиваем по Z-оси */ 
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
 }
+
+.invite{
+    position: fixed;
+    right: 0;
+    margin-right: 30px;
+    margin-top: 18px;;
+}
+
+.toast {
+    visibility: hidden;
+    opacity: 0;
+    min-width: 200px;
+    background-color: #4caf50;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    text-align: center;
+    transition: opacity 0.5s, visibility 0.5s;
+    top: 20px;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}
