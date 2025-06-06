@@ -35,22 +35,27 @@ const CreateGame = () => {
 
 	const handleCreateGame = React.useCallback(() => {
 		if (!gameName.trim()) return;
-		console.log("isUserRegistered", isUserRegistered());
 
 		if (!isUserRegistered()) {
+			console.log("setModalOpen");
 			setModalOpen(true);
 		} else {
 			setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
 		}
 	}, [gameName, setModalOpen, setGameId]);
 
-	const handleCloseModalWindow = React.useCallback(() => {
+	const handleLoginCustomUser = React.useCallback(() => {
 		setModalOpen(false);
 		setGameId(Math.random().toString(36).substring(2, 10) + Date.now().toString(36));
 	}, [setModalOpen, setGameId]);
 
+	const handleCloseModalWindow = React.useCallback(() => {
+		setModalOpen(false);
+	}, [setModalOpen, setGameId]);
+
+
+
 	React.useEffect(() => {
-		console.log("gameId", gameId);
 		if (gameId && user) {
 			saveGameSettings({
 				id: gameId,
@@ -80,7 +85,7 @@ const CreateGame = () => {
 			</div>
 
 			{/* Модальное окно */}
-			{modalOpen && <LoginUserModalWindow onClose={handleCloseModalWindow} />}
+			{modalOpen && (<LoginUserModalWindow onLogin={handleLoginCustomUser} onClose={handleCloseModalWindow} />)}
 		</section>
 	);
 };

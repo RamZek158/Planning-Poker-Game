@@ -4,7 +4,7 @@ import { addUser } from "../../api/users/users";
 import profileIcon from "../../assets/images/profile-icon.png";
 import "./LoginUserModalWindow.css";
 
-const LoginUserModalWindow = ({ onClose }) => {
+const LoginUserModalWindow = ({ onLogin, onClose }) => {
 	const [customName, setCustomName] = useState("");
 	const [cookies, setCookie] = useCookies(["logged-user-info"]);
 
@@ -34,10 +34,8 @@ const LoginUserModalWindow = ({ onClose }) => {
 			name: customName,
 			picture: profileIcon,
 		});
-		handleLogin();
-	}, [handleLogin, setCookie, addUser, customName]);
-	onClose();
-	[onClose];
+		onLogin();
+	}, [onLogin, setCookie, addUser, customName]);
 
 	return (
 		<div className="modal-overlay">
