@@ -4,7 +4,7 @@ import { addUser } from "../../api/users/users";
 import profileIcon from "../../assets/images/profile-icon.png";
 import "./LoginUserModalWindow.css";
 
-const LoginUserModalWindow = ({ onLogin, onClose }) => {
+const LoginUserModalWindow = ({ onLogin, onClose, isCloseButton }) => {
 	const [customName, setCustomName] = useState("");
 	const [cookies, setCookie] = useCookies(["logged-user-info"]);
 
@@ -40,9 +40,11 @@ const LoginUserModalWindow = ({ onLogin, onClose }) => {
 	return (
 		<div className="modal-overlay">
 			<div className="modal-content">
+				{!isCloseButton && (
 				<button className="modal-close" onClick={onClose}>
 					&times;
 				</button>
+				)}
 				<h3>Введите ваше имя</h3>
 				<input type="text" placeholder="Ваше имя" value={customName} onChange={handleChangeInput} />
 				<div>
