@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
+import "./GameRoom.css";
 import { PlayingCard } from "../../components";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router";
@@ -21,15 +22,15 @@ function GameRoom() {
 	const { id } = useParams(); // ID комнаты из URL
 
   // Проверяем авторизацию при загрузке страницы
-  useEffect(() => {
+useEffect(() => {
     if (!cookies["logged-user-info"]) {
       setModalOpen(true); // если не авторизован — открываем модалку
     }
-  }, [cookies]);
+}, [cookies]);
 
-  const handleLogin = () => {
+const handleLogin = () => {
     setModalOpen(false); // закрываем модалку после входа
-  };
+};
 
 
 	
@@ -58,22 +59,31 @@ function GameRoom() {
 	return (
 		<section className="hero pageContainer">
 			<div>
-				<h1>Игра: {gameName}</h1>
+				<h1>Задача: {gameName}</h1>
 			</div>
-			<div style={{ display: "flex", margin: "10px" }}>
-				<div style={{ margin: "10px", padding: "10px" }}>
+			<div className="table">
+			</div>
+
+			<div className="cardSection">
+				<div className="titlt">
+    				<span>Выберите вашу карту 👇</span>
+				</div>
+			<div className="cards">
+				<div className="card">
 					<PlayingCard randomCardSuit={0} cardValue="L" />
 				</div>
-				<div style={{ margin: "10px", padding: "10px" }}>
+				<div className="card">
 					<PlayingCard randomCardSuit={1} cardValue="XL" />
 				</div>
-				<div style={{ margin: "10px", padding: "10px" }}>
+				<div className="card">
 					<PlayingCard randomCardSuit={2} cardValue="XXL" />
 				</div>
-				<div style={{ margin: "10px", padding: "10px" }}>
+				<div className="card">
 					<PlayingCard randomCardSuit={3} cardValue="?" />
 				</div>
 			</div>
+			</div>
+
 			{modalOpen && (<LoginUserModalWindow onLogin={handleLogin} onClose={() => setModalOpen(false)} isCloseButton={true} />)}
 		</section>
 	);
