@@ -35,6 +35,7 @@ const CreateGame = () => {
 
 	const handleCreateGame = React.useCallback(() => {
 		if (!gameName.trim()) return;
+		console.log("isUserRegistered", isUserRegistered());
 
 		if (!isUserRegistered()) {
 			setModalOpen(true);
@@ -49,7 +50,8 @@ const CreateGame = () => {
 	}, [setModalOpen, setGameId]);
 
 	React.useEffect(() => {
-		if (gameId) {
+		console.log("gameId", gameId);
+		if (gameId && user) {
 			saveGameSettings({
 				id: gameId,
 				userId: user.user_id,
@@ -58,7 +60,7 @@ const CreateGame = () => {
 			});
 			navigate(`/game/${gameId}`);
 		}
-	}, [gameId]);
+	}, [gameId, user]);
 
 	return (
 		<section className="pageContainer middleAlignContainer">

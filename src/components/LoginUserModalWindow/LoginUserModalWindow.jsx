@@ -34,15 +34,17 @@ const LoginUserModalWindow = ({ onClose }) => {
 			name: customName,
 			picture: profileIcon,
 		});
-		onClose();
-	}, [onClose, setCookie, addUser, customName]);
+		handleLogin();
+	}, [handleLogin, setCookie, addUser, customName]);
+	onClose();
+	[onClose];
 
 	return (
 		<div className="modal-overlay">
 			<div className="modal-content">
-				{/* <button className="modal-close" onClick={onClose}>
+				<button className="modal-close" onClick={onClose}>
 					&times;
-				</button> */}
+				</button>
 				<h3>Введите ваше имя</h3>
 				<input type="text" placeholder="Ваше имя" value={customName} onChange={handleChangeInput} />
 				<div>
