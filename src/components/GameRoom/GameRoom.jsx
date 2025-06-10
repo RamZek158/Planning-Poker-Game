@@ -5,11 +5,10 @@ import { useCookies } from "react-cookie";
 import { useParams } from "react-router";
 import { getUsers } from "../../api/users/users";
 import { getGameSettings } from "../../api/gameSettings/gameSettings";
-import gameSettings from "../../../tmp/gameSettings.json";
 import LoginUserModalWindow from "../LoginUserModalWindow/LoginUserModalWindow";
 
 function GameRoom() {
-	const [gameName, setGameName] = useState("");
+	const [gameSettings, setGameSettings] = useState({});
 	const [users, setUsers] = useState([]);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [showToast, setShowToast] = useState(false);
@@ -19,6 +18,8 @@ function GameRoom() {
 	const [cookies] = useCookies(["logged-user-info"]);
 	const user = cookies["logged-user-info"];
 	const { id } = useParams(); // ID комнаты из URL
+
+	const gameOrganizer = gameSettings.userId === user.user_id;
 
 	// Проверяем авторизацию при загрузке страницы
 	useEffect(() => {
@@ -36,7 +37,7 @@ function GameRoom() {
 		getGameSettings()
 			.then((data) => {
 				if (data) {
-					setGameName(data?.name || "");
+					setGameSettings(data || {});
 				}
 			})
 			.catch((err) => {
@@ -69,13 +70,6 @@ function GameRoom() {
 			});
 	};
 
-	// Генерация случайной масти и цвета
-	const getRandomSuit = () => {
-		const suits = ["hearts", "diams", "spades", "clubs"];
-		const randomIndex = Math.floor(Math.random() * suits.length);
-		return suits[randomIndex];
-	};
-
 	const getSuitColor = (suit) => {
 		return suit === "hearts" || suit === "diams" ? "red" : "black";
 	};
@@ -95,17 +89,17 @@ function GameRoom() {
 	const allVoted = users.every((u) => votes[u.id]);
 
 	return (
-		<div className="game-room">
+		<div className="pageContainer">
 			{/* Кнопка "Пригласить участников" */}
-			<div className="copy-container">
-				<button onClick={copyLink} className="btn primary invite">
+			<div className="rightAligned">
+				<button onClick={copyLink} className="btn primary">
 					Пригласить участников
 				</button>
 				<div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
 			</div>
 
 			{/* Заголовок */}
-			<h1 className="game-title">Задача: {gameName}</h1>
+			<h1 className="game-title">На обсуждении: {gameSettings.name}</h1>
 
 			{/* Поле с голосами */}
 			<div className="table">
@@ -144,7 +138,7 @@ function GameRoom() {
 			</div>
 
 			{/* Карусель снизу */}
-			<div className="Cards-containers">
+			<div className="cards-containers">
 				<Carousel items={gameSettings.votingType} onCardClick={handleCardClick} />
 			</div>
 

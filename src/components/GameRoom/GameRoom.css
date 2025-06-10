@@ -1,16 +1,4 @@
 /* GameRoom.css */
-.game-room {
-	display: flex;
-	flex-direction: column;
-	/* min-height: 100vh; */
-	position: relative;
-}
-
-.copy-container {
-	position: absolute;
-	top: 20px;
-	right: 30px;
-}
 
 .game-title {
 	text-align: center;
@@ -41,7 +29,7 @@
 	margin: 20px 0;
 }
 
-.Cards-containers {
+.cards-containers {
 	position: fixed;
 	bottom: 0;
 	left: 0;
