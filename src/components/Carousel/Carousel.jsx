@@ -1,47 +1,120 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { PlayingCard } from "../../components";
 import "./Carousel.css";
 
-const Carousel = ({ children }) => {
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [length, setLength] = useState(React.Children.count(children));
-
-	useEffect(() => {
-		setLength(React.Children.count(children));
-	}, [children]);
-
-	const next = () => {
-		if (currentIndex < length - 1) {
-			setCurrentIndex(currentIndex + 1);
-		}
-	};
-
-	const prev = () => {
-		if (currentIndex > 0) {
-			setCurrentIndex(currentIndex - 1);
-		}
-	};
-
-	return (
-		<div className="carousel-container">
-			<div className="carousel-wrapper">
-				<button onClick={prev} className="left-arrow">
-					&lt;
-				</button>
-				<div className="carousel-content-wrapper">
-					<div className="carousel-content" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-						<PlayingCard randomCardSuit={0} cardValue="L" />
-						<PlayingCard randomCardSuit={1} cardValue="S" />
-						<PlayingCard randomCardSuit={2} cardValue="XL" />
-						<PlayingCard randomCardSuit={3} cardValue="XXL" />
-					</div>
-				</div>
-				<button onClick={next} className="right-arrow">
-					&gt;
-				</button>
-			</div>
-		</div>
-	);
+// --- Вспомогательные функции ---
+const getRandomSuit = () => {
+	const suits = ["hearts", "diams", "spades", "clubs"];
+	const randomIndex = Math.floor(Math.random() * suits.length);
+	return suits[randomIndex];
 };
 
-export default Carousel;
+const getSuitColor = (suit) => {
+	return suit === "hearts" || suit === "diams" ? "red" : "black";
+};
+
+// --- Хук для определения необходимости карусели ---
+function useIsCarouselNeeded() {
+	const containerRef = useRef(null);
+	const [isCarouselNeeded, setIsCarouselNeeded] = useState(false);
+
+	useEffect(() => {
+		const checkWidth = () => {
+			if (!containerRef.current) return;
+
+			const container = containerRef.current;
+			const isOverflowing = container.scrollWidth > container.clientWidth;
+
+			setIsCarouselNeeded(isOverflowing);
+		};
+
+		checkWidth();
+		window.addEventListener("resize", checkWidth);
+
+		return () => {
+			window.removeEventListener("resize", checkWidth);
+		};
+	}, []);
+
+	return { isCarouselNeeded, containerRef };
+}
+
+// --- Компонент Карусели ---
+export default function Carousel({ items = [], onCardClick }) {
+	const cardWidth = 120; // ширина одной карты + gap
+	const { isCarouselNeeded, containerRef } = useIsCarouselNeeded();
+	const [offset, setOffset] = useState(0);
+	const [touchPosition, setTouchPosition] = useState(null);
+
+	const maxOffset = (items.length - 1) * (cardWidth / 1.3); // можно подстроить
+
+	const moveLeft = () => {
+		setOffset((prev) => Math.max(prev - cardWidth, 0));
+	};
+
+	const moveRight = () => {
+		setOffset((prev) => Math.min(prev + cardWidth, maxOffset));
+	};
+
+	const handleTouchStart = (e) => {
+		const touch = e.touches[0];
+		setTouchPosition(touch.clientX);
+	};
+
+	const handleTouchMove = (e) => {
+		if (!touchPosition) return;
+
+		const touch = e.touches[0];
+		const diff = touch.clientX - touchPosition;
+
+		if (diff > 5) {
+			moveLeft();
+		} else if (diff < -5) {
+			moveRight();
+		}
+
+		setTouchPosition(null);
+	};
+
+	if (!isCarouselNeeded) {
+		return (
+			<div className="card-list" ref={containerRef}>
+				{items.map((value, index) => {
+					const cardSuitName = getRandomSuit();
+					const cardColor = getSuitColor(cardSuitName);
+
+					return (
+						<div key={index} className="carousel-item" onClick={() => onCardClick(value, cardSuitName)}>
+							<PlayingCard cardSuitName={cardSuitName} cardValue={value} cardColor={cardColor} />
+						</div>
+					);
+				})}
+			</div>
+		);
+	}
+
+	return (
+		<div className="carousel-container" ref={containerRef}>
+			<button className="carousel-button left" onClick={moveLeft} disabled={offset === 0}>
+				←
+			</button>
+
+			<div className="carousel-track" style={{ transform: `translateX(-${offset}px)` }} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
+				{items.map((value, index) => {
+					const cardSuitName = getRandomSuit();
+					const cardColor = getSuitColor(cardSuitName);
+
+					return (
+						<div key={index} className="carousel-item" onClick={() => onCardClick(value, cardSuitName)}>
+							<PlayingCard cardSuitName={cardSuitName} cardValue={value} cardColor={cardColor} />
+						</div>
+					);
+				})}
+			</div>
+
+			<button className="carousel-button right" onClick={moveRight} disabled={offset >= maxOffset}>
+				→
+			</button>
+		</div>
+	);
+}

@@ -1,66 +1,62 @@
+/* src/components/Carousel/Carousel.css */
+
 .carousel-container {
-	width: 100px;
-
-	overflow: hidden; /*штучка которая не дает выпасть за рамки */
-}
-
-.carousel-wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 	position: relative;
 	width: 100%;
+	overflow: visible;
 }
 
-.carousel-content-wrapper {
-	overflow: hidden;
-	width: 100%;
-	white-space: nowrap;
-}
-
-.carousel-content {
+.carousel-track {
 	display: flex;
-	transition: transform 0.5s ease-in-out;
+	gap: 16px;
+	transition: transform 0.3s ease-in-out;
+	overflow: visible;
 }
 
 .carousel-item {
-	flex: 0 0 100%;
-	display: inline-block;
-	text-align: center;
+	position: relative;
+	z-index: 1;
 }
 
-.left-arrow,
-.right-arrow {
+.carousel-item:hover {
+	z-index: 2;
+}
+
+.carousel-button {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
 	border: none;
-	color: #fff;
-	font-size: 1.5rem;
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
 	cursor: pointer;
-	z-index: 1;
-	transition: background 0.3s ease;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.left-arrow {
-	left: -20px;
+.carousel-button.left {
+	left: 0;
 }
 
-.right-arrow {
-	right: -20px;
+.carousel-button.right {
+	right: 0;
 }
 
-.left-arrow:hover,
-.right-arrow:hover {
-	background-color: rgba(0, 0, 0, 0.3);
-}
-
-.left-arrow:disabled,
-.right-arrow:disabled {
-	opacity: 0.5;
+.carousel-button:disabled {
+	opacity: 0.4;
 	cursor: not-allowed;
+}
+
+.card-list {
+	display: flex;
+	overflow-x: auto;
+	gap: 16px;
+	scroll-behavior: smooth;
 }

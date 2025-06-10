@@ -95,7 +95,8 @@ function GameRoom() {
 	const allVoted = users.every((u) => votes[u.id]);
 
 	return (
-		<section className="hero pageContainer">
+		<div className="game-room">
+			{/* Кнопка "Пригласить участников" */}
 			<div className="copy-container">
 				<button onClick={copyLink} className="btn primary invite">
 					Пригласить участников
@@ -103,11 +104,10 @@ function GameRoom() {
 				<div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
 			</div>
 
-			<div>
-				<h1>Задача: {gameName}</h1>
-			</div>
+			{/* Заголовок */}
+			<h1 className="game-title">Задача: {gameName}</h1>
 
-			{/* Основное поле — здесь будут показаны все голоса */}
+			{/* Поле с голосами */}
 			<div className="table">
 				{showAllVotes ? (
 					<div className="all-votes">
@@ -121,32 +121,6 @@ function GameRoom() {
 					<p>Голосуют участники...</p>
 				)}
 			</div>
-
-			{/* Блок с выбором карт внизу экрана */}
-			<div className="cardSection">
-				<div className="title">
-					<span>Выберите вашу карту 👇</span>
-				</div>
-				<div className="cards-container">
-					{" "}
-					{gameSettings.votingType.map((value, index) => {
-						const cardSuitName = getRandomSuit();
-						const cardColor = getSuitColor(cardSuitName);
-
-						return (
-							<div key={index} className="playing-card-wrapper" onClick={() => handleCardClick(value, cardSuitName)}>
-								<PlayingCard cardSuitName={cardSuitName} cardValue={value} cardColor={cardColor} />
-							</div>
-						);
-					})}
-				</div>
-				<div>
-					<Carousel />
-				</div>
-			</div>
-
-			{/* Модальное окно */}
-			{modalOpen && <LoginUserModalWindow onLogin={handleLogin} onClose={() => setModalOpen(false)} isCloseButton={true} />}
 
 			{/* Управление голосованием */}
 			<div className="controls">
@@ -168,7 +142,15 @@ function GameRoom() {
 					</button>
 				)}
 			</div>
-		</section>
+
+			{/* Карусель снизу */}
+			<div className="Cards-containers">
+				<Carousel items={gameSettings.votingType} onCardClick={handleCardClick} />
+			</div>
+
+			{/* Модальное окно */}
+			{modalOpen && <LoginUserModalWindow onLogin={handleLogin} onClose={() => setModalOpen(false)} isCloseButton={true} />}
+		</div>
 	);
 }
 
