@@ -1,0 +1,141 @@
+/* === Основной контейнер === */
+.game-table-container {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* === Выпадающий список "Ещё не проголосовали" === */
+.not-voted-dropdown {
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.not-voted-dropdown h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #555;
+}
+
+.dropdown-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 5px;
+    max-height: 120px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fafafa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    padding: 6px 12px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
+}
+
+/* === Игровой стол === */
+.game-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 200px;
+    background-color: #2e7d32; /* зелёный цвет стола */
+    color: white;
+    margin: 0 auto;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.table-message {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.show-cards-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #2e7d32;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.show-cards-btn:hover {
+    background-color: #e8f5e9;
+}
+
+/* === Открытые карты на столе === */
+.revealed-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.vote-card {
+    width: 64px;
+    height: 90px;
+}
+
+/* === Игроки вокруг стола === */
+.players-around {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.player-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.user-rectangle {
+    width: 64px;
+    height: 90px;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: 2px solid #ddd;
+    transition: transform 0.2s ease;
+}
+
+.user-rectangle:hover {
+    transform: scale(1.05);
+}
+
+/* === Дополнительно: эффект для "все готовы" === */
+.all-ready {
+    color: green;
+    font-weight: bold;
+    font-size: 1rem;
+}

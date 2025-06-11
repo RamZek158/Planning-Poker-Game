@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./GameRoom.css";
-import { PlayingCard, Carousel } from "../../components";
+import { PlayingCard, Carousel, GameTable } from "../../components";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router";
 import { getUsers } from "../../api/users/users";
@@ -20,6 +20,9 @@ function GameRoom() {
 	const { id } = useParams(); // ID комнаты из URL
 
 	const gameOrganizer = gameSettings.userId === user.user_id;
+
+	const [showNotVotedList, setShowNotVotedList] = useState(false);
+	const dropdownRef = useRef(null);
 
 	// Проверяем авторизацию при загрузке страницы
 	useEffect(() => {
@@ -88,8 +91,24 @@ function GameRoom() {
 	// Проверяем, все ли проголосовали
 	const allVoted = users.every((u) => votes[u.id]);
 
+	useEffect(() => {
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowNotVotedList(false);
+        }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+    };
+}, []);
+
+// Получаем список непроголосовавших
+const notVotedUsers = users.filter((u) => !votes[u.id]);
+
 	return (
-		<div className="pageContainer">
+		<div className="pageContent">
 			{/* Кнопка "Пригласить участников" */}
 			<div className="rightAligned">
 				<button onClick={copyLink} className="btn primary">
@@ -102,40 +121,49 @@ function GameRoom() {
 			<h1 className="game-title">На обсуждении: {gameSettings.name}</h1>
 
 			{/* Поле с голосами */}
-			<div className="table">
-				{showAllVotes ? (
-					<div className="all-votes">
-						{Object.entries(votes).map(([userId, vote]) => (
-							<div key={userId} className="vote-card">
-								<PlayingCard cardSuitName={vote.suit} cardValue={vote.value} cardColor={getSuitColor(vote.suit)} />
-							</div>
-						))}
-					</div>
-				) : (
-					<p>Голосуют участники...</p>
-				)}
-			</div>
+<div className="game-room-layout">
+    {/* Слева: выпадающий список */}
+    <div className="sidebar">
+    <div className="not-voted-dropdown" ref={dropdownRef}>
+        <h3
+            className="toggle-list"
+            onClick={() => setShowNotVotedList((prev) => !prev)}
+        >
+            Ещё не проголосовали:
+            {notVotedUsers.length > 0 && (
+                <span className="badge">{notVotedUsers.length}</span>
+            )}
+        </h3>
 
-			{/* Управление голосованием */}
-			<div className="controls">
-				{allVoted && !showAllVotes && (
-					<button className="btn primary" onClick={() => setShowAllVotes(true)}>
-						Показать карты
-					</button>
-				)}
+        {/* Выпадающий список */}
+        {showNotVotedList && (
+            <ul className="dropdown-list">
+                {notVotedUsers.map((u) => (
+                    <li key={u.id} className="dropdown-item">
+                        {u.name}
+                    </li>
+                ))}
+            </ul>
+        )}
+    </div>
+</div>
 
-				{showAllVotes && (
-					<button
-						className="btn primary"
-						onClick={() => {
-							setVotes({});
-							setShowAllVotes(false);
-						}}
-					>
-						Начать новое голосование
-					</button>
-				)}
-			</div>
+    {/* Центр: игровой стол */}
+    <div className="main-content">
+        <GameTable
+			PlayingCard={PlayingCard}
+            users={users}
+            votes={votes}
+            showAllVotes={showAllVotes}
+            setShowAllVotes={setShowAllVotes}
+            allVoted={allVoted}
+            getSuitColor={getSuitColor}
+            setVotes={setVotes}
+        />
+    </div>
+</div>
+
+			
 
 			{/* Карусель снизу */}
 			<div className="cards-containers">

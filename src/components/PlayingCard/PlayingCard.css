@@ -1,85 +1,82 @@
 /* === Стили самой карты === */
 
 .playingCard {
-	cursor: pointer;
-	background-color: white;
-	font-size: 1.2em;
-	border: solid 1px #ccc;
-	border-radius: 5px;
-	flex-shrink: 0;
-	width: 64px;
-	height: 90px;
-	text-align: center;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    background-color: white;
+    font-size: 1.2em;
+    border: solid 1px #ccc;
+    border-radius: 5px;
+    overflow: visible;
+    flex-shrink: 0;
+    width: 64px;
+    height: 90px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .playingCard:hover {
-	transform: translateY(-10px) rotateZ(3deg);
-	box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-10px) rotateZ(3deg);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    z-index: 100;
 }
 
 .playingCard .card-suit {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .cardSuitsContainer {
-	margin: 2px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+    margin: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .playingCard .playingCardValue {
-	padding: 0;
-	margin: 6px 0;
+    padding: 0;
+    margin: 6px 0;
 }
 
 .playingCard .card_hearts,
 .playingCard .card_diams {
-	color: red;
+    color: red;
 }
+
 
 /* === Медиа-запросы для мобильных устройств === */
 
 @media (max-width: 768px) {
-	.playingCard {
-		width: 42px;
-		height: 59px;
-		font-size: 0.8em;
-	}
-
-	.playingCard .playingCardValue {
-		margin: 4px 0;
-	}
-
-	.cardSuitsContainer {
-		margin: 1px;
-	}
-
-	.cards-container {
-		gap: 4px;
-		padding: 5px;
-	}
+    .playingCard {
+        width: 42px;
+        height: 59px;
+        font-size: 0.8em;
+    }
+    .playingCard .playingCardValue {
+        margin: 4px 0;
+    }
+    .cardSuitsContainer {
+        margin: 1px;
+    }
+    .cards-container {
+        gap: 4px;
+        padding: 5px;
+    }
 }
 
 @media (max-width: 576px) {
-	.playingCard {
-		width: 32px;
-		height: 45px;
-		font-size: 0.6em;
-	}
-
-	.playingCard .playingCardValue {
-		margin: 3px 0;
-	}
-
-	.cardSuitsContainer {
-		margin: 0;
-	}
-
-	.cards-container {
-		gap: 2px;
-		padding: 3px;
-	}
+    .playingCard {
+        width: 32px;
+        height: 45px;
+        font-size: 0.6em;
+    }
+    .playingCard .playingCardValue {
+        margin: 3px 0;
+    }
+    .cardSuitsContainer {
+        margin: 0;
+    }
+    .cards-container {
+        gap: 2px;
+        padding: 3px;
+    }
 }
