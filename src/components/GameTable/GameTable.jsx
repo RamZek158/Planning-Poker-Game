@@ -22,18 +22,10 @@ function GameTable({ users, votes, showAllVotes, setShowAllVotes, allVoted, Play
                 ) : (
             <>
         {/* Кнопка "Начать новое голосование" */}
-        <button
-            className="btn primary restart-btn"
-            onClick={() => {
-                setVotes({});
-                setShowAllVotes(false);
-            }}
-        >
-            Начать новое голосование
-        </button>
-    </>
-                )}
-            </div>
+        <button className="btn primary restart-btn" onClick={() => { setVotes({}); setShowAllVotes(false); }}>Начать новое голосование</button>
+        </>
+        )}
+</div>
 
             {/* Участники вокруг стола */}
             <div className="players-around">

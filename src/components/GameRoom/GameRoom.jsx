@@ -76,7 +76,6 @@ function GameRoom() {
 	const getSuitColor = (suit) => {
 		return suit === "hearts" || suit === "diams" ? "red" : "black";
 	};
-
 	// Обработка выбора карты
 	const handleCardClick = (value, suit) => {
 		const userId = user?.user_id;
@@ -110,12 +109,12 @@ const notVotedUsers = users.filter((u) => !votes[u.id]);
 	return (
 		<div className="pageContent">
 			{/* Кнопка "Пригласить участников" */}
-			<div className="rightAligned">
-				<button onClick={copyLink} className="btn primary">
-					Пригласить участников
-				</button>
-				<div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
-			</div>
+			<div className="invite-button-container">
+    <button onClick={copyLink} className="btn primary">
+        Пригласить участников
+    </button>
+    <div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
+</div>
 
 			{/* Заголовок */}
 			<h1 className="game-title">На обсуждении: {gameSettings.name}</h1>
@@ -124,34 +123,33 @@ const notVotedUsers = users.filter((u) => !votes[u.id]);
 <div className="game-room-layout">
     {/* Слева: выпадающий список */}
     <div className="sidebar">
-    <div className="not-voted-dropdown" ref={dropdownRef}>
-        <h3
-            className="toggle-list"
-            onClick={() => setShowNotVotedList((prev) => !prev)}
-        >
-            Ещё не проголосовали:
-            {notVotedUsers.length > 0 && (
-                <span className="badge">{notVotedUsers.length}</span>
-            )}
-        </h3>
+        <div className="not-voted-dropdown" ref={dropdownRef}>
+            <h3
+                className="toggle-list"
+                onClick={() => setShowNotVotedList((prev) => !prev)}
+            >
+                Ещё не проголосовали:
+                {notVotedUsers.length > 0 && (
+                    <span className="badge">{notVotedUsers.length}</span>
+                )}
+            </h3>
 
-        {/* Выпадающий список */}
-        {showNotVotedList && (
-            <ul className="dropdown-list">
-                {notVotedUsers.map((u) => (
-                    <li key={u.id} className="dropdown-item">
-                        {u.name}
-                    </li>
-                ))}
-            </ul>
-        )}
+            {showNotVotedList && (
+                <ul className="dropdown-list">
+                    {notVotedUsers.map((u) => (
+                        <li key={u.id} className="dropdown-item">
+                            {u.name}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     </div>
-</div>
 
     {/* Центр: игровой стол */}
     <div className="main-content">
         <GameTable
-			PlayingCard={PlayingCard}
+            PlayingCard={PlayingCard}
             users={users}
             votes={votes}
             showAllVotes={showAllVotes}
@@ -161,6 +159,30 @@ const notVotedUsers = users.filter((u) => !votes[u.id]);
             setVotes={setVotes}
         />
     </div>
+
+    {/* Справа: результаты голосования (после "Показать карты") */}
+<div className="right-sidebar">
+    {showAllVotes && (
+        <div className="votes-results">
+            <h3>Результаты голосования</h3>
+            <div className="votes-cards">
+                {Object.entries(votes).map(([userId, vote]) => {
+                    const user = users.find(u => u.id === userId);
+                    return (
+                        <div key={userId} className="vote-card">
+                            <strong>{user?.name}</strong>
+                            <PlayingCard
+                                cardSuitName={vote.suit}
+                                cardValue={vote.value}
+                                cardColor={getSuitColor(vote.suit)}
+                            />
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    )}
+</div>
 </div>
 
 			

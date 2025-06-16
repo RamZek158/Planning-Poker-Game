@@ -1,4 +1,5 @@
-
+/* === Заголовок комнаты === */
+/* Центрированный заголовок с отступами сверху и снизу */
 .game-title {
     text-align: center;
     margin-top: 20px;
@@ -6,6 +7,8 @@
     font-size: 24px;
 }
 
+/* === Устаревший стиль .table (не используется?) === */
+/* Блок для игрового стола, центрирует контент по вертикали и горизонтали */
 .table {
     flex: 1;
     display: flex;
@@ -15,6 +18,8 @@
     margin: 20px 0;
 }
 
+/* === Блок с голосами всех игроков (возможно, не используется) === */
+/* Контейнер для отображения всех карт после голосования */
 .all-votes {
     display: flex;
     flex-wrap: wrap;
@@ -23,12 +28,16 @@
     max-width: 80%;
 }
 
+/* === Блок управления (например, кнопки) === */
+/* Используется для центрирования элементов управления, например кнопок */
 .controls {
     display: flex;
     justify-content: center;
     margin: 20px 0;
 }
 
+/* === Фиксированная карусель внизу страницы === */
+/* Контейнер для карточек выбора значений (карусель), зафиксирован внизу экрана */
 .cards-containers {
     position: fixed;
     bottom: 0;
@@ -39,6 +48,33 @@
     overflow: visible;
 }
 
+/* === Контейнер кнопки "Пригласить участников" === */
+/* Обёртка фиксированной кнопки в правом верхнем углу */
+.invite-button-container {
+    position: fixed;
+    top: calc(20px + 151.99px); /* Под хедер и отступ сверху */
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* === Стиль самой кнопки приглашения === */
+/* Визуальное оформление кнопки */
+.invite-button-container .btn {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+}
+
+/* === Анимация наведения на кнопку === */
+/* Лёгкий подъём кнопки при наведении */
+.invite-button-container .btn:hover {
+    transform: translateY(-2px);
+}
+
+/* === Тостовое уведомление о скопированной ссылке === */
+/* Невидимое по умолчанию уведомление, появляется при копировании ссылки */
 .toast {
     visibility: hidden;
     opacity: 0;
@@ -56,20 +92,26 @@
     top: 20px;
 }
 
+/* === Активное состояние тоста === */
+/* Показываем уведомление */
 .toast.show {
     opacity: 1;
     visibility: visible;
 }
 
+/* === Основной макет страницы с игровой комнатой === */
+/* Располагает левую панель, стол и правую панель в строку, выравнивает по верху */
 .game-room-layout {
-     display: flex;
+    display: flex;
+    align-items: flex-start; /* Прижимаем все блоки к верху */
     gap: 40px;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    justify-content: center;
 }
 
+/* === Левая боковая панель со списком непроголосовавших === */
+/* Ширина и позиционирование выпадающего списка слева */
 .sidebar {
     width: 250px;
     position: sticky;
@@ -77,6 +119,8 @@
     align-self: flex-start;
 }
 
+/* === Выпадающий список непроголосовавших === */
+/* Стилизованный блок с заголовком и списком пользователей */
 .not-voted-dropdown {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -85,6 +129,8 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* === Заголовок выпадающего списка === */
+/* Стиль текста "Ещё не проголосовали", кликабельный */
 .toggle-list {
     margin: 0;
     font-size: 1rem;
@@ -96,12 +142,16 @@
     align-items: center;
 }
 
+/* === Стрелочка рядом с заголовком выпадающего списка === */
+/* Символ стрелки, показывает, что это кликабельный элемент */
 .toggle-list::after {
     content: " ▼";
     font-size: 0.8rem;
     color: #777;
 }
 
+/* === Бейдж с количеством непроголосовавших === */
+/* Маленький красный кружочек с числом непроголосовавших */
 .badge {
     margin-left: 8px;
     background-color: #e57373;
@@ -111,6 +161,8 @@
     border-radius: 4px;
 }
 
+/* === Список непроголосовавших === */
+/* Скроллируемый список участников, которые ещё не проголосовали */
 .dropdown-list {
     list-style: none;
     padding-left: 0;
@@ -121,6 +173,8 @@
     animation: fadeIn 0.2s ease-in-out;
 }
 
+/* === Элемент списка непроголосовавших === */
+/* Каждый пользователь в списке */
 .dropdown-item {
     padding: 6px 10px;
     font-size: 14px;
@@ -128,13 +182,55 @@
     transition: background-color 0.2s ease;
 }
 
+/* === Ховер для элемента списка === */
+/* Подсветка при наведении */
 .dropdown-item:hover {
     background-color: #f5f5f5;
 }
 
+/* === Центральный контейнер с игровым столом === */
+/* Основная область, где находится игровой стол и участники вокруг него */
 .main-content {
-     flex: 1;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* === Правая боковая панель с результатами голосования === */
+/* Область справа, где отображаются результаты после нажатия "Показать карты" */
+.right-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    padding-left: 10px;
+}
+
+/* === Блок с результатами голосования === */
+/* Обёртка для отображения результата: фон, тень, внутренний отступ */
+.votes-results {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+/* === Список карточек с голосами === */
+/* Вертикальный список с именами и картами проголосовавших */
+.votes-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* === Одна карточка голоса пользователя === */
+/* Каждый элемент списка: имя + карта */
+.vote-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 8px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
