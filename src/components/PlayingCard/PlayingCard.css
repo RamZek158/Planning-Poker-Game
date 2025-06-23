@@ -12,10 +12,12 @@
     height: 90px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Добавляем margin сверху для компенсации анимации */
+    margin-top: 15px;
 }
 
 .playingCard:hover {
-    transform: translateY(-10px) rotateZ(3deg);
+    transform: translateY(-5px) rotateZ(3deg);
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
     z-index: 100;
 }

@@ -19,7 +19,8 @@ function GameRoom() {
 	const user = cookies["logged-user-info"];
 	const { id } = useParams(); // ID комнаты из URL
 
-	const gameOrganizer = gameSettings.userId === user.user_id;
+	// Add safety check for user before accessing user_id
+	const gameOrganizer = gameSettings.userId === user?.user_id;
 
 	const [showNotVotedList, setShowNotVotedList] = useState(false);
 	const dropdownRef = useRef(null);
@@ -28,6 +29,8 @@ function GameRoom() {
 	useEffect(() => {
 		if (!cookies["logged-user-info"]) {
 			setModalOpen(true); // если не авторизован — открываем модалку
+		} else {
+			setModalOpen(false); // если авторизован — модалка не нужна
 		}
 	}, [cookies]);
 
@@ -76,6 +79,7 @@ function GameRoom() {
 	const getSuitColor = (suit) => {
 		return suit === "hearts" || suit === "diams" ? "red" : "black";
 	};
+
 	// Обработка выбора карты
 	const handleCardClick = (value, suit) => {
 		const userId = user?.user_id;
@@ -91,101 +95,99 @@ function GameRoom() {
 	const allVoted = users.every((u) => votes[u.id]);
 
 	useEffect(() => {
-    const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setShowNotVotedList(false);
-        }
-    };
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+				setShowNotVotedList(false);
+			}
+		};
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-    };
-}, []);
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
-// Получаем список непроголосовавших
-const notVotedUsers = users.filter((u) => !votes[u.id]);
+	// Получаем список непроголосовавших
+	const notVotedUsers = users.filter((u) => !votes[u.id]);
 
 	return (
 		<div className="pageContent">
 			{/* Кнопка "Пригласить участников" */}
 			<div className="invite-button-container">
-    <button onClick={copyLink} className="btn primary">
-        Пригласить участников
-    </button>
-    <div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
-</div>
+				<button onClick={copyLink} className="btn primary">
+					Пригласить участников
+				</button>
+				<div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
+			</div>
 
 			{/* Заголовок */}
 			<h1 className="game-title">На обсуждении: {gameSettings.name}</h1>
 
 			{/* Поле с голосами */}
-<div className="game-room-layout">
-    {/* Слева: выпадающий список */}
-    <div className="sidebar">
-        <div className="not-voted-dropdown" ref={dropdownRef}>
-            <h3
-                className="toggle-list"
-                onClick={() => setShowNotVotedList((prev) => !prev)}
-            >
-                Ещё не проголосовали:
-                {notVotedUsers.length > 0 && (
-                    <span className="badge">{notVotedUsers.length}</span>
-                )}
-            </h3>
+			<div className="game-room-layout">
+				{/* Слева: выпадающий список */}
+				<div className="sidebar">
+					<div className="not-voted-dropdown" ref={dropdownRef}>
+						<h3
+							className="toggle-list"
+							onClick={() => setShowNotVotedList((prev) => !prev)}
+						>
+							Ещё не проголосовали:
+							{notVotedUsers.length > 0 && (
+								<span className="badge">{notVotedUsers.length}</span>
+							)}
+						</h3>
 
-            {showNotVotedList && (
-                <ul className="dropdown-list">
-                    {notVotedUsers.map((u) => (
-                        <li key={u.id} className="dropdown-item">
-                            {u.name}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    </div>
+						{showNotVotedList && (
+							<ul className="dropdown-list">
+								{notVotedUsers.map((u) => (
+									<li key={u.id} className="dropdown-item">
+										{u.name}
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+				</div>
 
-    {/* Центр: игровой стол */}
-    <div className="main-content">
-        <GameTable
-            PlayingCard={PlayingCard}
-            users={users}
-            votes={votes}
-            showAllVotes={showAllVotes}
-            setShowAllVotes={setShowAllVotes}
-            allVoted={allVoted}
-            getSuitColor={getSuitColor}
-            setVotes={setVotes}
-        />
-    </div>
+				{/* Центр: игровой стол */}
+				<div className="main-content">
+					<GameTable
+						PlayingCard={PlayingCard}
+						users={users}
+						votes={votes}
+						showAllVotes={showAllVotes}
+						setShowAllVotes={setShowAllVotes}
+						allVoted={allVoted}
+						getSuitColor={getSuitColor}
+						setVotes={setVotes}
+					/>
+				</div>
 
-    {/* Справа: результаты голосования (после "Показать карты") */}
-<div className="right-sidebar">
-    {showAllVotes && (
-        <div className="votes-results">
-            <h3>Результаты голосования</h3>
-            <div className="votes-cards">
-                {Object.entries(votes).map(([userId, vote]) => {
-                    const user = users.find(u => u.id === userId);
-                    return (
-                        <div key={userId} className="vote-card">
-                            <strong>{user?.name}</strong>
-                            <PlayingCard
-                                cardSuitName={vote.suit}
-                                cardValue={vote.value}
-                                cardColor={getSuitColor(vote.suit)}
-                            />
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    )}
-</div>
-</div>
-
-			
+				{/* Справа: результаты голосования (после "Показать карты") */}
+				<div className="right-sidebar">
+					{showAllVotes && (
+						<div className="votes-results">
+							<h3>Результаты голосования</h3>
+							<div className="votes-cards">
+								{Object.entries(votes).map(([userId, vote]) => {
+									const user = users.find(u => u.id === userId);
+									return (
+										<div key={userId} className="vote-card">
+											<strong>{user?.name}</strong>
+											<PlayingCard
+												cardSuitName={vote.suit}
+												cardValue={vote.value}
+												cardColor={getSuitColor(vote.suit)}
+											/>
+										</div>
+									);
+								})}
+							</div>
+						</div>
+					)}
+				</div>
+			</div>
 
 			{/* Карусель снизу */}
 			<div className="cards-containers">

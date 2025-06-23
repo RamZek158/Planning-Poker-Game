@@ -51,54 +51,27 @@
     justify-content: center;
     width: 300px;
     height: 200px;
-    background-color: #2e7d32; /* зелёный цвет стола */
+    background: linear-gradient(135deg, #2e7d32, #388e3c);
     color: white;
     margin: 0 auto;
     border-radius: 12px;
     position: relative;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border: 3px solid #1b5e20;
 }
 
 .table-message {
     font-size: 18px;
     font-weight: bold;
     text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.show-cards-btn {
-    margin-top: 10px;
-    padding: 6px 12px;
-    font-size: 14px;
-    background-color: #fff;
-    color: #2e7d32;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.show-cards-btn:hover {
-    background-color: #e8f5e9;
-}
-
-/* === Открытые карты на столе === */
-.revealed-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.vote-card {
-    width: 64px;
-    height: 90px;
-}
 
 /* === Игроки вокруг стола === */
 .players-around {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 20px;
     margin-top: 40px;
     max-width: 600px;
@@ -114,28 +87,149 @@
     gap: 8px;
 }
 
+/* === Стили для пользователей (до показа карт) === */
 .user-rectangle {
-    width: 64px;
-    height: 90px;
-    background-color: #f0f0f0;
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     color: #333;
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.2rem;
-    border: 2px solid #ddd;
-    transition: transform 0.2s ease;
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-rectangle:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* === Дополнительно: эффект для "все готовы" === */
-.all-ready {
-    color: green;
+.user-rectangle.voted {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border-color: #28a745;
+    color: #155724;
+}
+
+.user-initial {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+}
+
+.user-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.vote-indicator {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
     font-weight: bold;
-    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    animation: checkmark-bounce 0.6s ease-out;
+}
+
+@keyframes checkmark-bounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* === Стили для показа результатов === */
+.player-with-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.player-with-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-color: #007bff;
+}
+
+.player-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 6px;
+    min-width: 60px;
+}
+
+/* === Адаптивность === */
+@media (max-width: 768px) {
+    .players-around {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 15px;
+    }
+    
+    .user-rectangle {
+        width: 70px;
+        height: 90px;
+    }
+    
+    .user-initial {
+        font-size: 1.5rem;
+    }
+    
+    .user-name {
+        font-size: 0.7rem;
+    }
+    
+    .game-table {
+        width: 280px;
+        height: 180px;
+    }
+    
+    .table-message {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .players-around {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 10px;
+    }
+    
+    .user-rectangle {
+        width: 60px;
+        height: 80px;
+    }
+    
+    .user-initial {
+        font-size: 1.2rem;
+    }
+    
+    .user-name {
+        font-size: 0.6rem;
+    }
 }

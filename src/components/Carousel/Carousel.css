@@ -1,20 +1,26 @@
 .carousel-container {
     position: relative;
     width: 100%;
-    overflow: visible;
+    /* ВАЖНО: скрываем горизонтальный overflow */
+    overflow-x: hidden;
+    overflow-y: visible;
+    /* Добавляем отступы для анимации */
+    padding: 20px 20px 20px 0;
 }
 
 .carousel-track {
     display: flex;
     gap: 16px;
     transition: transform 0.3s ease-in-out;
-    overflow: visible;
+    /* ВАЖНО: добавляем отступ справа для анимации последней карты */
+    padding-right: 30px;
 }
 
 .carousel-item {
     position: relative;
     z-index: 1;
-    padding-top: 20px;
+    /* Предотвращаем выход за границы при анимации */
+    flex-shrink: 0;
 }
 
 .carousel-item:hover {
@@ -55,7 +61,11 @@
 
 .card-list {
     display: flex;
-    overflow-x: auto;
+    /* ВАЖНО: скрываем горизонтальный overflow */
+    overflow-x: hidden;
+    overflow-y: visible;
     gap: 16px;
     scroll-behavior: smooth;
+    /* Добавляем отступы для анимации */
+    padding: 20px 30px 20px 30px;
 }

@@ -5,6 +5,7 @@ body {
     padding: 0;
     font-family: 'Arial', sans-serif;
     font-size: 16px;
+    background-color: var(--bg-header-color);
 }
 
 .app {
