@@ -53,8 +53,6 @@ const CreateGame = () => {
 		setModalOpen(false);
 	}, [setModalOpen, setGameId]);
 
-
-
 	React.useEffect(() => {
 		if (gameId && user) {
 			saveGameSettings({
@@ -85,7 +83,7 @@ const CreateGame = () => {
 			</div>
 
 			{/* Модальное окно */}
-			{modalOpen && (<LoginUserModalWindow onLogin={handleLoginCustomUser} onClose={handleCloseModalWindow} />)}
+			{modalOpen && <LoginUserModalWindow onLogin={handleLoginCustomUser} onClose={handleCloseModalWindow} />}
 		</section>
 	);
 };
