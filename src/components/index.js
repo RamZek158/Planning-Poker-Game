@@ -6,3 +6,4 @@ export { LoginUserModalWindow } from "./LoginUserModalWindow";
 export { PlayingCard } from "./PlayingCard";
 export { Carousel } from "./Carousel";
 export { GameTable } from "./GameTable";
+export { PaymentPage } from "./PaymentPage";

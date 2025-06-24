@@ -1,47 +1,47 @@
 @import "variables.css";
 @import "buttons.css";
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    background-color: var(--bg-header-color);
+	margin: 0;
+	padding: 0;
+	font-family: "Arial", sans-serif;
+	font-size: 16px;
+	background-color: var(--bg-header-color);
 }
 
 .app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 main {
-    flex: 1;
-    padding: 2rem 0;
+	flex: 1;
+	padding: 2rem 0;
 }
 
 .pageContainer {
-    margin: 20px 100px;
+	margin: 20px 100px;
 }
 
 .middleAlignContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .rightAligned {
-    display: flex;
-    justify-content: flex-end;
+	display: flex;
+	justify-content: flex-end;
 }
 
 @media (max-width: 768px) {
-    .pageContainer {
-        margin: 20px 50px;
-    }
+	.pageContainer {
+		margin: 20px 50px;
+	}
 }
 
 @media (max-width: 576px) {
-    .pageContainer {
-        margin: 20px 25px;
-    }
+	.pageContainer {
+		margin: 20px 25px;
+	}
 }

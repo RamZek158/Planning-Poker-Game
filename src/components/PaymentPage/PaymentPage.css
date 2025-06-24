@@ -1,0 +1,53 @@
+.payment-container {
+	max-width: 600px;
+	margin: 60px auto;
+	text-align: center;
+	color: #eaeaea;
+	padding: 20px;
+}
+
+.payment-container h1 {
+	font-size: 2rem;
+	margin-bottom: 20px;
+}
+
+.payment-container p {
+	font-size: 1.1rem;
+	margin-bottom: 30px;
+}
+
+.qr-code img {
+	width: 250px;
+	height: 250px;
+	margin: 0 auto 30px;
+	border: 2px solid #007bff;
+	border-radius: 8px;
+}
+
+.sbp-info {
+	margin-top: 20px;
+	font-size: 1rem;
+}
+
+.bank-details {
+	background-color: #243441;
+	padding: 20px;
+	border-radius: 10px;
+	margin-top: 20px;
+	line-height: 1.8;
+}
+
+.back-button {
+	margin-top: 30px;
+	padding: 12px 24px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+	background-color: #0056b3;
+}

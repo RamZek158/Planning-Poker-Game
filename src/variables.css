@@ -1,7 +1,7 @@
 :root {
-    --bg-header-color: #2c3e50;
-    --primary-color: #007bff;
-    --primary-hover-color: #0056b3;
-    --text-color: white;
-    --hover-light: rgba(255, 255, 255, 0.1);
+	--bg-header-color: #1a2935;
+	--primary-color: #007bff;
+	--primary-hover-color: #0056b3;
+	--text-color: white;
+	--hover-light: rgba(255, 255, 255, 0.1);
 }
