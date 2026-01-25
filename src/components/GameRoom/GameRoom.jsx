@@ -3,9 +3,7 @@ import "./GameRoom.css";
 import { PlayingCard, Carousel, GameTable } from "../../components";
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router";
-import { getUsers } from "../../api/users/users";
 import { getGameSettings } from "../../api/gameSettings/gameSettings";
-import LoginUserModalWindow from "../LoginUserModalWindow/LoginUserModalWindow";
 
 function GameRoom() {
 	const [gameSettings, setGameSettings] = useState({});
@@ -128,14 +126,9 @@ function GameRoom() {
 				{/* Слева: выпадающий список */}
 				<div className="sidebar">
 					<div className="not-voted-dropdown" ref={dropdownRef}>
-						<h3
-							className="toggle-list"
-							onClick={() => setShowNotVotedList((prev) => !prev)}
-						>
+						<h3 className="toggle-list" onClick={() => setShowNotVotedList((prev) => !prev)}>
 							Ещё не проголосовали:
-							{notVotedUsers.length > 0 && (
-								<span className="badge">{notVotedUsers.length}</span>
-							)}
+							{notVotedUsers.length > 0 && <span className="badge">{notVotedUsers.length}</span>}
 						</h3>
 
 						{showNotVotedList && (
@@ -171,15 +164,11 @@ function GameRoom() {
 							<h3>Результаты голосования</h3>
 							<div className="votes-cards">
 								{Object.entries(votes).map(([userId, vote]) => {
-									const user = users.find(u => u.id === userId);
+									const user = users.find((u) => u.id === userId);
 									return (
 										<div key={userId} className="vote-card">
 											<strong>{user?.name}</strong>
-											<PlayingCard
-												cardSuitName={vote.suit}
-												cardValue={vote.value}
-												cardColor={getSuitColor(vote.suit)}
-											/>
+											<PlayingCard cardSuitName={vote.suit} cardValue={vote.value} cardColor={getSuitColor(vote.suit)} />
 										</div>
 									);
 								})}
@@ -195,7 +184,6 @@ function GameRoom() {
 			</div>
 
 			{/* Модальное окно */}
-			{modalOpen && <LoginUserModalWindow onLogin={handleLogin} onClose={() => setModalOpen(false)} isCloseButton={true} />}
 		</div>
 	);
 }

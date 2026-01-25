@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router";
 import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from "../../utils";
 import { saveGameSettings } from "../../api/gameSettings/gameSettings";
-import LoginUserModalWindow from "../LoginUserModalWindow/LoginUserModalWindow";
 
 const CreateGame = () => {
 	const [gameName, setGameName] = React.useState("");
