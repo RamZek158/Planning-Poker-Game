@@ -1,0 +1,83 @@
+/* Modal styles */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	background: #fff;
+	padding: 24px;
+	border-radius: 8px;
+	width: 90%;
+	max-width: 400px;
+	position: relative;
+}
+
+.modal-close {
+	position: absolute;
+	top: 12px;
+	right: 16px;
+	font-size: 24px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: #999;
+}
+
+.modal-form input {
+	width: 100%;
+	padding: 10px;
+	margin: 8px 0;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+}
+
+.modal-error {
+	color: #d32f2f;
+	margin: 8px 0;
+	text-align: center;
+	font-size: 14px;
+}
+
+.modal-divider {
+	text-align: center;
+	margin: 16px 0;
+	color: #888;
+	position: relative;
+	line-height: 1;
+}
+
+.modal-divider::before,
+.modal-divider::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	width: 42%;
+	height: 1px;
+	background: #ddd;
+}
+
+.modal-divider::before {
+	left: 0;
+}
+.modal-divider::after {
+	right: 0;
+}
+
+/* Используем ваши глобальные .btn стили */
+.google-btn {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
