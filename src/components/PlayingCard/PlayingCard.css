@@ -1,84 +1,80 @@
-/* === Стили самой карты === */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&display=swap");
 
 .playingCard {
-    cursor: pointer;
-    background-color: white;
-    font-size: 1.2em;
-    border: solid 1px #ccc;
-    border-radius: 5px;
-    overflow: visible;
-    flex-shrink: 0;
-    width: 64px;
-    height: 90px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* Добавляем margin сверху для компенсации анимации */
-    margin-top: 15px;
+	position: relative;
+	width: 60px;
+	height: 80px;
+
+	background: #1e293b;
+	border-radius: 12px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	user-select: none;
+
+	border: 2px solid #3b82f6;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	overflow: hidden;
 }
 
+.playingCardValue {
+	position: relative;
+	z-index: 2;
+	font-family: "Manrope", sans-serif;
+	font-size: 20px;
+	font-weight: 800;
+	color: #60a5fa;
+	line-height: 1;
+	letter-spacing: -0.5px;
+	transition: all 0.3s ease;
+}
+
+/* === HOVER === */
 .playingCard:hover {
-    transform: translateY(-5px) rotateZ(3deg);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
-    z-index: 100;
+	border-color: #60a5fa;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
 
-.playingCard .card-suit {
-    padding: 0;
-    margin: 0;
+.playingCard:hover .playingCardValue {
+	color: #93c5fd;
 }
 
-.cardSuitsContainer {
-    margin: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* === SELECTED (как на фото) === */
+.playingCard.selected {
+	background: #3b82f6;
+	border-color: #60a5fa;
+	transform: translateY(-12px);
+	box-shadow:
+		0 12px 24px rgba(59, 130, 246, 0.5),
+		0 0 0 2px rgba(96, 165, 250, 0.3);
+	z-index: 10;
 }
 
-.playingCard .playingCardValue {
-    padding: 0;
-    margin: 6px 0;
+.playingCard.selected .playingCardValue {
+	color: #ffffff;
+	font-size: 22px;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.playingCard .card_hearts,
-.playingCard .card_diams {
-    color: red;
+/* === ACTIVE === */
+.playingCard:active {
+	transform: scale(0.95);
+	transition: 0.1s;
 }
 
-
-/* === Медиа-запросы для мобильных устройств === */
-
+/* === Адаптив === */
 @media (max-width: 768px) {
-    .playingCard {
-        width: 42px;
-        height: 59px;
-        font-size: 0.8em;
-    }
-    .playingCard .playingCardValue {
-        margin: 4px 0;
-    }
-    .cardSuitsContainer {
-        margin: 1px;
-    }
-    .cards-container {
-        gap: 4px;
-        padding: 5px;
-    }
-}
-
-@media (max-width: 576px) {
-    .playingCard {
-        width: 32px;
-        height: 45px;
-        font-size: 0.6em;
-    }
-    .playingCard .playingCardValue {
-        margin: 3px 0;
-    }
-    .cardSuitsContainer {
-        margin: 0;
-    }
-    .cards-container {
-        gap: 2px;
-        padding: 3px;
-    }
+	.playingCard {
+		width: 50px;
+		height: 70px;
+		border-radius: 10px;
+	}
+	.playingCardValue {
+		font-size: 18px;
+	}
 }

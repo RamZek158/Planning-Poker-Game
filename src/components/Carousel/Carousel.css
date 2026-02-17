@@ -1,71 +1,33 @@
 .carousel-container {
-    position: relative;
-    width: 100%;
-    /* ВАЖНО: скрываем горизонтальный overflow */
-    overflow-x: hidden;
-    overflow-y: visible;
-    /* Добавляем отступы для анимации */
-    padding: 20px 20px 20px 0;
+	position: relative;
+	width: 100%;
+	overflow-x: hidden;
+	overflow-y: visible;
+	padding: 30px 20px 30px 0; /* Увеличил сверху/снизу для подъёма карты */
 }
 
 .carousel-track {
-    display: flex;
-    gap: 16px;
-    transition: transform 0.3s ease-in-out;
-    /* ВАЖНО: добавляем отступ справа для анимации последней карты */
-    padding-right: 30px;
+	display: flex;
+	gap: 12px; /* Уменьшил расстояние между картами */
+	transition: transform 0.3s ease-in-out;
+	padding-right: 30px;
 }
 
 .carousel-item {
-    position: relative;
-    z-index: 1;
-    /* Предотвращаем выход за границы при анимации */
-    flex-shrink: 0;
+	position: relative;
+	z-index: 1;
+	flex-shrink: 0;
 }
 
 .carousel-item:hover {
-    z-index: 2;
-}
-
-.carousel-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.carousel-button.left {
-    left: 0;
-}
-
-.carousel-button.right {
-    right: 0;
-}
-
-.carousel-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+	z-index: 2;
 }
 
 .card-list {
-    display: flex;
-    /* ВАЖНО: скрываем горизонтальный overflow */
-    overflow-x: hidden;
-    overflow-y: visible;
-    gap: 16px;
-    scroll-behavior: smooth;
-    /* Добавляем отступы для анимации */
-    padding: 20px 30px 20px 30px;
+	display: flex;
+	overflow-x: hidden;
+	overflow-y: visible;
+	gap: 12px;
+	scroll-behavior: smooth;
+	padding: 30px 30px 30px 30px; /* Больше места сверху/сниза */
 }

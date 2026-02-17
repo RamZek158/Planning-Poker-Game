@@ -1,53 +1,66 @@
 import React from "react";
 import "./GameTable.css";
-import { PlayingCard, Carousel } from "../../components";
+import { PlayingCard } from "../../components";
 
-function GameTable({ users, votes, showAllVotes, setShowAllVotes, allVoted, PlayingCard, getSuitColor, setVotes }) {
+function GameTable({
+	users = [],
+	votes = {},
+	showAllVotes,
+	setShowAllVotes,
+	allVoted,
+	setVotes,
+}) {
 	return (
-		<div className="game-table-container">
-			{/* Игровой стол */}
-			<div className="game-table">
+		<div className='game-table-container'>
+			<div className='game-table'>
 				{!showAllVotes ? (
 					<>
-						<p className="table-message">Участники голосуют...</p>
+						<p className='table-message'>Участники голосуют...</p>
+
 						{allVoted && (
-							<button className="btn primary show-cards-btn" onClick={() => setShowAllVotes(true)}>
+							<button
+								className='btn primary show-cards-btn'
+								onClick={() => setShowAllVotes(true)}
+							>
 								Показать карты
 							</button>
 						)}
 					</>
 				) : (
-					<>
-						{/* Кнопка "Начать новое голосование" */}
-						<button
-							className="btn primary restart-btn"
-							onClick={() => {
-								setVotes({});
-								setShowAllVotes(false);
-							}}
-						>
-							Начать новое голосование
-						</button>
-					</>
+					<button
+						className='btn primary restart-btn'
+						onClick={() => {
+							setVotes({});
+							setShowAllVotes(false);
+						}}
+					>
+						Начать новое голосование
+					</button>
 				)}
 			</div>
 
-			{/* Участники вокруг стола */}
-			<div className="players-around">
+			<div className='players-around'>
 				{users.map((u) => {
 					const voted = votes[u.id];
+
 					return (
-						<div key={u.id} className="player-slot">
-							{/* Показываем карту только после нажатия "Показать карты" */}
+						<div key={u.id} className='player-slot'>
 							{showAllVotes && voted ? (
-								<div className="player-with-card">
-									<span className="player-name">{u.name}</span>
+								<div className='player-with-card'>
+									<span className='player-name'>{u.name}</span>
+
+									<PlayingCard
+										cardSuitName={voted.suit}
+										cardValue={voted.value}
+									/>
 								</div>
 							) : (
 								<div className={`user-rectangle ${voted ? "voted" : ""}`}>
-									<span className="user-initial">{u.name.charAt(0).toUpperCase()}</span>
-									<span className="user-name">{u.name}</span>
-									{voted && <div className="vote-indicator">✓</div>}
+									<span className='user-initial'>
+										{u.name?.charAt(0)?.toUpperCase()}
+									</span>
+									<span className='user-name'>{u.name}</span>
+									{voted && <div className='vote-indicator'>✓</div>}
 								</div>
 							)}
 						</div>

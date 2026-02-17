@@ -2,18 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { PlayingCard } from "../../components";
 import "./Carousel.css";
 
-// --- Вспомогательные функции ---
-const getRandomSuit = () => {
-	const suits = ["hearts", "diams", "spades", "clubs"];
-	const randomIndex = Math.floor(Math.random() * suits.length);
-	return suits[randomIndex];
-};
-
-const getSuitColor = (suit) => {
-	return suit === "hearts" || suit === "diams" ? "red" : "black";
-};
-
-// --- Хук для определения необходимости карусели ---
+// --- проверка переполнения ---
 function useIsCarouselNeeded() {
 	const containerRef = useRef(null);
 	const [isCarouselNeeded, setIsCarouselNeeded] = useState(false);
@@ -39,14 +28,14 @@ function useIsCarouselNeeded() {
 	return { isCarouselNeeded, containerRef };
 }
 
-// --- Компонент Карусели ---
+// --- CAROUSEL ---
 export default function Carousel({ items = [], onCardClick }) {
-	const cardWidth = 120; // ширина одной карты + gap
+	const cardWidth = 120;
 	const { isCarouselNeeded, containerRef } = useIsCarouselNeeded();
 	const [offset, setOffset] = useState(0);
 	const [touchPosition, setTouchPosition] = useState(null);
 
-	const maxOffset = (items.length - 1) * (cardWidth / 1.3); // можно подстроить
+	const maxOffset = Math.max((items.length - 1) * (cardWidth / 1.3), 0);
 
 	const moveLeft = () => {
 		setOffset((prev) => Math.max(prev - cardWidth, 0));
@@ -67,42 +56,52 @@ export default function Carousel({ items = [], onCardClick }) {
 		const touch = e.touches[0];
 		const diff = touch.clientX - touchPosition;
 
-		if (diff > 5) {
-			moveLeft();
-		} else if (diff < -5) {
-			moveRight();
-		}
+		if (diff > 5) moveLeft();
+		if (diff < -5) moveRight();
 
 		setTouchPosition(null);
 	};
 
-	// Генерируем уникальные данные для каждой карты один раз при первом рендере
+	// генерация карт
 	const cardsData = useMemo(() => {
 		return items.map((value) => ({
 			value,
-			suit: getRandomSuit(),
-			color: getSuitColor(getRandomSuit()),
 		}));
 	}, [items]);
 
+	// если карусель не нужна
 	if (!isCarouselNeeded) {
 		return (
-			<div className="card-list" ref={containerRef}>
+			<div className='card-list' ref={containerRef}>
 				{cardsData.map((card, index) => (
-					<div key={index} className="carousel-item" onClick={() => onCardClick(card.value, card.suit)}>
-						<PlayingCard cardSuitName={card.suit} cardValue={card.value} cardColor={card.color} />
+					<div
+						key={index}
+						className='carousel-item'
+						onClick={() => onCardClick?.(card.value)}
+					>
+						<PlayingCard cardValue={card.value} />
 					</div>
 				))}
 			</div>
 		);
 	}
 
+	// если нужна прокрутка
 	return (
-		<div className="carousel-container" ref={containerRef}>
-			<div className="carousel-track" style={{ transform: `translateX(-${offset}px)` }} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
+		<div className='carousel-container' ref={containerRef}>
+			<div
+				className='carousel-track'
+				style={{ transform: `translateX(-${offset}px)` }}
+				onTouchStart={handleTouchStart}
+				onTouchMove={handleTouchMove}
+			>
 				{cardsData.map((card, index) => (
-					<div key={index} className="carousel-item" onClick={() => onCardClick(card.value, card.suit)}>
-						<PlayingCard cardSuitName={card.suit} cardValue={card.value} cardColor={card.color} />
+					<div
+						key={index}
+						className='carousel-item'
+						onClick={() => onCardClick?.(card.value)}
+					>
+						<PlayingCard cardValue={card.value} />
 					</div>
 				))}
 			</div>

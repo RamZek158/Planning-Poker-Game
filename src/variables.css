@@ -1,7 +1,11 @@
 :root {
 	--bg-header-color: #1a2935;
+	--card-bg-color: #1a2935;
 	--primary-color: #007bff;
 	--primary-hover-color: #0056b3;
 	--text-color: white;
-	--hover-light: rgba(255, 255, 255, 0.1);
+	--text-muted: #94a3b8;
+	--hover-light: rgba(255, 255, 255, 0.05);
+	--hover-color: rgba(255, 255, 255, 0.1);
+	--border-color: rgba(255, 255, 255, 0.1);
 }

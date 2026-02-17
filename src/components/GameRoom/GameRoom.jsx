@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./GameRoom.css";
+
 import { PlayingCard, Carousel, GameTable } from "../../components";
+import Modal from "../../components/Modal/Modal";
+
 import { useCookies } from "react-cookie";
-import { useParams } from "react-router";
-import { getGameSettings } from "../../api/gameSettings/gameSettings";
+import { useParams, useNavigate } from "react-router";
+
+import {
+	getGameSettings,
+	deleteGameRoom,
+} from "../../api/gameSettings/gameSettings";
 
 function GameRoom() {
 	const [gameSettings, setGameSettings] = useState({});
@@ -15,138 +22,156 @@ function GameRoom() {
 
 	const [cookies] = useCookies(["logged-user-info"]);
 	const user = cookies["logged-user-info"];
-	const { id } = useParams(); // ID комнаты из URL
 
-	// Add safety check for user before accessing user_id
-	const gameOrganizer = gameSettings.userId === user?.user_id;
+	const navigate = useNavigate();
+	const { gameId } = useParams();
 
-	const [showNotVotedList, setShowNotVotedList] = useState(false);
 	const dropdownRef = useRef(null);
 
-	// Проверяем авторизацию при загрузке страницы
+	console.log("ROOM PARAM ID:", gameId);
+	console.log("ITEMS FOR CAROUSEL:", gameSettings?.voting_type);
+
+	/* =========================================================
+	   АВТОРИЗАЦИЯ
+	========================================================= */
+
 	useEffect(() => {
-		if (!cookies["logged-user-info"]) {
-			setModalOpen(true); // если не авторизован — открываем модалку
-		} else {
-			setModalOpen(false); // если авторизован — модалка не нужна
+		if (!user) {
+			setModalOpen(true);
+			return;
 		}
-	}, [cookies]);
 
-	const handleLogin = () => {
-		setModalOpen(false); // закрываем модалку после входа
-	};
+		setModalOpen(false);
 
-	// Загружаем данные игры и пользователей
+		const userId = user?.user_id || user?.id;
+		const userName = user?.user_name || user?.email;
+
+		if (!userId) return;
+
+		setUsers([
+			{
+				id: userId,
+				name: userName,
+			},
+		]);
+	}, [user]);
+
+	/* =========================================================
+	   ЗАГРУЗКА НАСТРОЕК КОМНАТЫ
+	========================================================= */
+
 	useEffect(() => {
-		getGameSettings()
-			.then((data) => {
-				if (data) {
-					setGameSettings(data || {});
-				}
-			})
-			.catch((err) => {
-				console.error("Ошибка загрузки:", err);
-			});
+		if (!gameId) return;
 
-		getUsers()
+		getGameSettings(gameId)
 			.then((data) => {
-				if (data) {
-					setUsers(data);
+				console.log("GAME SETTINGS FROM DB:", data);
+
+				if (!data) return;
+
+				let voting = data.voting_type;
+
+				// postgres array → js array
+				if (typeof voting === "string") {
+					voting = voting.replace(/[{}]/g, "").split(",");
 				}
+
+				console.log("VOTING TYPE PARSED:", voting);
+
+				setGameSettings({
+					...data,
+					voting_type: voting,
+				});
 			})
-			.catch((err) => {
-				console.error("Ошибка загрузки:", err);
-			});
-	}, []);
+			.catch(console.error);
+	}, [gameId]);
+
+	/* =========================================================
+	   КОПИРОВАНИЕ ССЫЛКИ
+	========================================================= */
 
 	const copyLink = () => {
 		const url = window.location.href;
+
 		navigator.clipboard
 			.writeText(url)
 			.then(() => {
 				setShowToast(true);
-				setTimeout(() => {
-					setShowToast(false);
-				}, 3000);
+				setTimeout(() => setShowToast(false), 3000);
 			})
-			.catch((err) => {
-				console.error("Ошибка при копировании ссылки:", err);
-			});
+			.catch(console.error);
 	};
+
+	/* =========================================================
+	   ЛОГИКА КАРТ
+	========================================================= */
 
 	const getSuitColor = (suit) => {
 		return suit === "hearts" || suit === "diams" ? "red" : "black";
 	};
 
-	// Обработка выбора карты
-	const handleCardClick = (value, suit) => {
-		const userId = user?.user_id;
+	const handleCardClick = (value) => {
+		const userId = user?.user_id || user?.id;
 		if (!userId) return;
 
 		setVotes((prev) => ({
 			...prev,
-			[userId]: { value, suit },
+			[userId]: { value },
 		}));
 	};
 
-	// Проверяем, все ли проголосовали
-	const allVoted = users.every((u) => votes[u.id]);
+	const allVoted = users.length > 0 ? users.every((u) => votes[u.id]) : false;
 
-	useEffect(() => {
-		const handleClickOutside = (event) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-				setShowNotVotedList(false);
-			}
-		};
+	/* =========================================================
+	   УДАЛЕНИЕ КОМНАТЫ
+	========================================================= */
 
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, []);
+	const handleDeleteRoom = async () => {
+		console.log("DELETE CLICKED", gameId);
 
-	// Получаем список непроголосовавших
-	const notVotedUsers = users.filter((u) => !votes[u.id]);
+		const confirmDelete = window.confirm("Закрыть комнату?");
+		if (!confirmDelete) return;
+
+		try {
+			const res = await deleteGameRoom(gameId);
+			console.log("DELETE RESPONSE:", res);
+
+			navigate("/");
+		} catch (e) {
+			console.error("DELETE ERROR:", e);
+		}
+	};
+
+	/* =========================================================
+	   RENDER
+	========================================================= */
 
 	return (
-		<div className="pageContent">
-			{/* Кнопка "Пригласить участников" */}
-			<div className="invite-button-container">
-				<button onClick={copyLink} className="btn primary">
+		<div className='pageContent'>
+			{/* пригласить */}
+			<div className='invite-button-container'>
+				<button onClick={copyLink} className='btn primary'>
 					Пригласить участников
 				</button>
-				<div className={`toast ${showToast ? "show" : ""}`}>🔗 Ссылка скопирована!</div>
+
+				<div className={`toast ${showToast ? "show" : ""}`}>
+					🔗 Ссылка скопирована!
+				</div>
 			</div>
 
-			{/* Заголовок */}
-			<h1 className="game-title">На обсуждении: {gameSettings.name}</h1>
+			{/* заголовок */}
+			<h1 className='game-title'>
+				На обсуждении: {gameSettings?.name || "Загрузка..."}
+			</h1>
 
-			{/* Поле с голосами */}
-			<div className="game-room-layout">
-				{/* Слева: выпадающий список */}
-				<div className="sidebar">
-					<div className="not-voted-dropdown" ref={dropdownRef}>
-						<h3 className="toggle-list" onClick={() => setShowNotVotedList((prev) => !prev)}>
-							Ещё не проголосовали:
-							{notVotedUsers.length > 0 && <span className="badge">{notVotedUsers.length}</span>}
-						</h3>
+			<button className='btn danger' onClick={handleDeleteRoom}>
+				Закрыть комнату 🗑
+			</button>
 
-						{showNotVotedList && (
-							<ul className="dropdown-list">
-								{notVotedUsers.map((u) => (
-									<li key={u.id} className="dropdown-item">
-										{u.name}
-									</li>
-								))}
-							</ul>
-						)}
-					</div>
-				</div>
-
-				{/* Центр: игровой стол */}
-				<div className="main-content">
+			{/* игровой стол */}
+			<div className='game-room-layout'>
+				<div className='main-content'>
 					<GameTable
-						PlayingCard={PlayingCard}
 						users={users}
 						votes={votes}
 						showAllVotes={showAllVotes}
@@ -156,34 +181,18 @@ function GameRoom() {
 						setVotes={setVotes}
 					/>
 				</div>
-
-				{/* Справа: результаты голосования (после "Показать карты") */}
-				<div className="right-sidebar">
-					{showAllVotes && (
-						<div className="votes-results">
-							<h3>Результаты голосования</h3>
-							<div className="votes-cards">
-								{Object.entries(votes).map(([userId, vote]) => {
-									const user = users.find((u) => u.id === userId);
-									return (
-										<div key={userId} className="vote-card">
-											<strong>{user?.name}</strong>
-											<PlayingCard cardSuitName={vote.suit} cardValue={vote.value} cardColor={getSuitColor(vote.suit)} />
-										</div>
-									);
-								})}
-							</div>
-						</div>
-					)}
-				</div>
 			</div>
 
-			{/* Карусель снизу */}
-			<div className="cards-containers">
-				<Carousel items={gameSettings.votingType} onCardClick={handleCardClick} />
+			{/* карусель */}
+			<div className='cards-containers'>
+				<Carousel
+					items={gameSettings?.voting_type || []}
+					onCardClick={handleCardClick}
+				/>
 			</div>
 
-			{/* Модальное окно */}
+			{/* модалка авторизации */}
+			<Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 		</div>
 	);
 }

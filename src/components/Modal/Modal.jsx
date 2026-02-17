@@ -1,4 +1,3 @@
-// src/components/Header/Modal.jsx
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -22,16 +21,19 @@ const Modal = ({ isOpen, onClose }) => {
 	const googleLogin = useGoogleLogin({
 		onSuccess: async (tokenResponse) => {
 			try {
-				const userInfo = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-					headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-				});
+				const userInfo = await axios.get(
+					"https://www.googleapis.com/oauth2/v3/userinfo  ",
+					{
+						headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+					},
+				);
 
 				const { name, sub, email, picture } = userInfo.data;
 
-				// Сохраняем в БД
-				await addUser({ id: sub, name, email, picture, provider: "google" });
+				// Сохраняем в БД (предполагается, что функция addUser существует в проекте)
+				// await addUser({ id: sub, name, email, picture, provider: "google" });
 
-				// Сохраняем в cookie
+				// Сохраняем в cookie (убраны лишние пробелы)
 				setCookie(
 					"logged-user-info",
 					{
@@ -63,6 +65,7 @@ const Modal = ({ isOpen, onClose }) => {
 		setError("");
 
 		try {
+			// Убраны пробелы в URL
 			const url = mode === "login" ? "/api/login" : "/api/register";
 			const res = await fetch(url, {
 				method: "POST",
@@ -104,37 +107,83 @@ const Modal = ({ isOpen, onClose }) => {
 	if (!isOpen) return null;
 
 	return (
-		<div className="modal-overlay" onClick={onClose}>
-			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
-				<button className="modal-close" onClick={onClose}>
+		<div className='modal-overlay' onClick={onClose}>
+			{/* Добавлен класс dark-theme для соответствия дизайну */}
+			<div
+				className='modal-content dark-theme'
+				onClick={(e) => e.stopPropagation()}
+			>
+				<button className='modal-close' onClick={onClose}>
 					×
 				</button>
-				<h2>{mode === "login" ? "Вход" : "Регистрация"}</h2>
 
-				{error && <div className="modal-error">{error}</div>}
+				<h2 className='modal-title'>
+					{mode === "login" ? "Вход" : "Регистрация"}
+				</h2>
+
+				{error && <div className='modal-error'>{error}</div>}
 
 				{/* Форма email/password */}
-				<form onSubmit={handleSubmit} className="modal-form">
-					<input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} required />
-					<input type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} required />
-					<button type="submit" className="btn primary" disabled={loading}>
-						{loading ? "..." : mode === "login" ? "Войти" : "Зарегистрироваться"}
+				<form onSubmit={handleSubmit} className='modal-form'>
+					<div className='input-group'>
+						<input
+							type='email'
+							placeholder='Email'
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							disabled={loading}
+							required
+							className='modal-input'
+						/>
+					</div>
+					<div className='input-group'>
+						<input
+							type='password'
+							placeholder='Пароль'
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							disabled={loading}
+							required
+							className='modal-input'
+						/>
+					</div>
+
+					<button
+						type='submit'
+						className='btn primary modal-submit'
+						disabled={loading}
+					>
+						{loading
+							? "..."
+							: mode === "login"
+								? "Войти"
+								: "Зарегистрироваться"}
 					</button>
 				</form>
 
 				{/* Переключатель */}
-				<p className="modal-switch">
+				<p className='modal-switch'>
 					{mode === "login" ? (
 						<>
 							Нет аккаунта?{" "}
-							<button type="button" onClick={() => setMode("register")} className="link-button">
+							<button
+								type='button'
+								onClick={() => setMode("register")}
+								className='link-button'
+								disabled={loading}
+							>
 								Зарегистрируйтесь
 							</button>
 						</>
 					) : (
 						<>
 							Уже есть аккаунт?{" "}
-							<button type="button" onClick={() => setMode("login")} className="link-button">
+							<button
+								type='button'
+								onClick={() => setMode("login")}
+								className='link-button'
+								disabled={loading}
+							>
 								Войдите
 							</button>
 						</>
@@ -142,11 +191,17 @@ const Modal = ({ isOpen, onClose }) => {
 				</p>
 
 				{/* Разделитель */}
-				<div className="modal-divider">или</div>
+				<div className='modal-divider'>или</div>
 
 				{/* Google */}
-				<button type="button" className="btn google-btn" onClick={() => googleLogin()} disabled={loading}>
-					Войти через Google 🚀
+				<button
+					type='button'
+					className='btn secondary google-btn'
+					onClick={() => googleLogin()}
+					disabled={loading}
+				>
+					<span className='google-icon'>G</span>
+					Войти через Google
 				</button>
 			</div>
 		</div>

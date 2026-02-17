@@ -1,57 +1,283 @@
 .account-page {
 	min-height: calc(100vh - 80px);
+	background: var(--bg-header-color);
+	color: var(--text-color);
+	padding: 40px 20px;
 	display: flex;
 	justify-content: center;
-	align-items: center;
-	background: #0f172a;
-	color: white;
 }
 
-.account-card {
-	background: #020617;
-	border-radius: 16px;
-	padding: 32px;
+.account-container {
+	display: grid;
+	grid-template-columns: 1fr 350px;
+	gap: 24px;
 	width: 100%;
-	max-width: 420px;
-	text-align: center;
-	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+	max-width: 1100px;
+}
+
+/* Общие стили карточек */
+.account-card {
+	background: var(--card-bg-color, #020617);
+	border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+	border-radius: 16px;
+	padding: 24px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.section-title {
+	font-size: 18px;
+	font-weight: 600;
+	margin: 0 0 20px 0;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--hover-light);
+}
+
+/* Профиль (Хедер) */
+.profile-header {
+	margin-bottom: 24px;
+}
+
+.profile-top {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	margin-bottom: 24px;
 }
 
 .account-avatar {
-	width: 120px;
-	height: 120px;
+	width: 100px;
+	height: 100px;
 	border-radius: 50%;
 	object-fit: cover;
-	margin-bottom: 16px;
+	border: 3px solid var(--hover-light);
+	flex-shrink: 0;
 }
 
 .account-avatar.placeholder {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 48px;
-	background: #1e293b;
+	font-size: 40px;
+	background: var(--hover-light);
+	color: var(--text-muted, #94a3b8);
+}
+
+.profile-info {
+	text-align: left;
+	flex: 1;
 }
 
 .account-name {
-	margin: 8px 0;
-	font-size: 22px;
+	margin: 0 0 4px 0;
+	font-size: 24px;
+	font-weight: 700;
 }
 
 .account-email {
-	color: #94a3b8;
-	margin-bottom: 16px;
+	margin: 0 0 8px 0;
+	color: var(--text-muted, #94a3b8);
+	font-size: 14px;
 }
 
-.account-meta {
+.account-badge {
+	display: inline-block;
+	background: var(--primary-color);
+	color: white;
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+/* Прогресс бар */
+.profile-progress {
+	margin-top: 16px;
+}
+
+.progress-label {
 	display: flex;
 	justify-content: space-between;
-	margin: 8px 0;
+	font-size: 13px;
+	color: var(--text-muted, #94a3b8);
+	margin-bottom: 8px;
+}
+
+.progress-bar {
+	height: 8px;
+	background: var(--hover-light);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.progress-fill {
+	height: 100%;
+	background: linear-gradient(
+		90deg,
+		var(--primary-color),
+		var(--primary-hover-color)
+	);
+	border-radius: 4px;
+	transition: width 0.5s ease;
+}
+
+/* Сетка информации */
+.info-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+}
+
+.info-item {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.info-label {
+	font-size: 12px;
+	color: var(--text-muted, #94a3b8);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.info-value {
+	font-size: 15px;
+	font-weight: 500;
+}
+
+/* Сайдбар */
+.account-sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Статистика */
+.stats-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+	text-align: center;
+}
+
+.stat-item {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 12px 8px;
+	background: var(--hover-light);
+	border-radius: 12px;
+}
+
+.stat-value {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--primary-color);
+}
+
+.stat-label {
+	font-size: 11px;
+	color: var(--text-muted, #94a3b8);
+}
+
+/* Действия */
+.actions-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.action-btn {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 12px 16px;
+	background: var(--hover-light);
+	border: none;
+	border-radius: 8px;
+	color: var(--text-color);
 	font-size: 14px;
-	color: #cbd5f5;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-align: left;
+}
+
+.action-btn:hover {
+	background: var(--hover-color, rgba(255, 255, 255, 0.15));
+	transform: translateX(4px);
+}
+
+.btn-icon {
+	font-size: 16px;
+}
+
+.action-divider {
+	border: none;
+	border-top: 1px solid var(--hover-light);
+	margin: 8px 0;
 }
 
 .logout-btn {
-	margin-top: 24px;
-	width: 100%;
+	justify-content: center;
+	margin-top: 8px;
+}
+
+/* Загрузчик и ошибки */
+.loader,
+.error-message {
+	font-size: 18px;
+	color: var(--text-color);
+	text-align: center;
+	padding: 40px;
+}
+
+.error-message {
+	color: #ff6b6b;
+}
+
+/* Адаптивность */
+@media (max-width: 900px) {
+	.account-container {
+		grid-template-columns: 1fr;
+		max-width: 600px;
+	}
+
+	.account-sidebar {
+		order: -1; /* Сайдбар сверху на мобильных */
+	}
+
+	.stats-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 576px) {
+	.info-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.profile-top {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.profile-info {
+		text-align: center;
+	}
+
+	.stats-grid {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 8px;
+	}
+
+	.stat-value {
+		font-size: 16px;
+	}
+
+	.stat-label {
+		font-size: 10px;
+	}
 }
