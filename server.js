@@ -99,7 +99,7 @@ const authenticateToken = (req, res, next) => {
  * Регистрация пользователя
  */
 app.post("/api/register", async (req, res) => {
-	const { email, password } = req.body;
+	const { email, password, name } = req.body; // ← name теперь опционален
 
 	if (!email || !password)
 		return res.status(400).json({ error: "Email & password required" });
@@ -108,22 +108,37 @@ app.post("/api/register", async (req, res) => {
 		const exists = await pool.query("SELECT id FROM users WHERE email=$1", [
 			email,
 		]);
-
 		if (exists.rows.length)
 			return res.status(400).json({ error: "User exists" });
 
 		const hash = await bcrypt.hash(password, 12);
 
+		// 🔥 Если name не передан — берём часть email до @
+		const userName = name || email.split("@")[0];
+
 		const result = await pool.query(
-			`INSERT INTO users (id,email,password,role,provider)
-			VALUES ($1,$2,$3,'user','email')
-			RETURNING id,email,role`,
-			[uuidv4(), email, hash],
+			`INSERT INTO users (id, email, password, name, role, provider)
+       VALUES ($1, $2, $3, $4, 'user', 'email')
+       RETURNING id, email, name, picture, role`,
+			[uuidv4(), email, hash, userName],
 		);
 
-		res.status(201).json(result.rows[0]);
+		const newUser = result.rows[0];
+
+		// 🔥 Возвращаем ТО, что ждёт фронтенд:
+		res.status(201).json({
+			success: true,
+			token: generateAccessToken(newUser), // ← именно "token", не "accessToken"
+			user: {
+				id: newUser.id,
+				email: newUser.email,
+				user_name: newUser.name, // ← маппим name → user_name
+				user_picture: newUser.picture, // ← может быть null — это ок
+				role: newUser.role,
+			},
+		});
 	} catch (e) {
-		console.error(e);
+		console.error("Register error:", e);
 		res.status(500).json({ error: "Server error" });
 	}
 });
@@ -136,7 +151,7 @@ app.post("/api/login", async (req, res) => {
 
 	try {
 		const usr = await pool.query(
-			"SELECT * FROM users WHERE email=$1 AND provider='email'",
+			"SELECT id, email, password, name, picture, role FROM users WHERE email=$1 AND provider='email'",
 			[email],
 		);
 
@@ -144,17 +159,23 @@ app.post("/api/login", async (req, res) => {
 			return res.status(400).json({ error: "Invalid credentials" });
 
 		const user = usr.rows[0];
-
 		const ok = await bcrypt.compare(password, user.password);
 		if (!ok) return res.status(400).json({ error: "Invalid credentials" });
 
+		// 🔥 Возвращаем ТО, что ждёт фронтенд:
 		res.json({
-			accessToken: generateAccessToken(user),
-			refreshToken: generateRefreshToken(user),
-			user: { id: user.id, email: user.email, role: user.role },
+			success: true,
+			token: generateAccessToken(user), // ← "token", а не "accessToken"
+			user: {
+				id: user.id,
+				email: user.email,
+				user_name: user.name, // ← может быть null
+				user_picture: user.picture, // ← может быть null
+				role: user.role,
+			},
 		});
 	} catch (e) {
-		console.error(e);
+		console.error("Login error:", e);
 		res.status(500).json({ error: "Server error" });
 	}
 });
@@ -317,9 +338,105 @@ app.delete("/api/users/:id", authenticateToken, async (req, res) => {
 app.get("/api/test", (req, res) => res.json({ message: "Backend alive" }));
 
 /* =========================================================
-	START SERVER
+	START SERVER & WEBSOCKETS (SOCKET.IO)
 ========================================================= */
+const http = require("http");
+const { Server } = require("socket.io");
 
-app.listen(PORT, () => {
-	console.log(`🚀 Server running → http://localhost:${PORT}`);
+const server = http.createServer(app);
+
+// Настраиваем Socket.IO с CORS
+const io = new Server(server, {
+	cors: {
+		origin: [
+			"http://localhost:3000",
+			"http://localhost:8080",
+			"http://localhost:3001",
+		],
+		credentials: true,
+	},
+});
+
+// Хранилище состояний комнат в памяти сервера
+// Формат: { roomId: { users: [{id, name}], votes: {userId: {value}}, showAllVotes: false } }
+const roomsState = {};
+
+io.on("connection", (socket) => {
+	console.log(`🔌 Участник подключился: ${socket.id}`);
+
+	// 1. Присоединение к комнате
+	socket.on("join_room", ({ roomId, user }) => {
+		socket.join(roomId);
+		socket.userId = user.id;
+		socket.roomId = roomId;
+
+		// Инициализируем комнату, если её ещё нет
+		if (!roomsState[roomId]) {
+			roomsState[roomId] = { users: [], votes: {}, showAllVotes: false };
+		}
+
+		const room = roomsState[roomId];
+
+		// Добавляем юзера, если его там нет
+		if (!room.users.find((u) => u.id === user.id)) {
+			room.users.push(user);
+		}
+
+		// Отправляем подключившемуся текущее состояние комнаты
+		socket.emit("room_state", room);
+
+		// Оповещаем остальных, что список юзеров обновился
+		socket.to(roomId).emit("users_update", room.users);
+	});
+
+	// 2. Игрок голосует
+	socket.on("vote", ({ roomId, userId, value }) => {
+		if (roomsState[roomId]) {
+			roomsState[roomId].votes[userId] = { value };
+			// Рассылаем всем в комнате новые голоса
+			io.to(roomId).emit("votes_update", roomsState[roomId].votes);
+		}
+	});
+
+	// 3. Админ показывает карты
+	socket.on("show_cards", ({ roomId }) => {
+		if (roomsState[roomId]) {
+			roomsState[roomId].showAllVotes = true;
+			io.to(roomId).emit("cards_revealed");
+		}
+	});
+
+	// 4. Админ перезапускает игру
+	socket.on("restart_game", ({ roomId }) => {
+		if (roomsState[roomId]) {
+			roomsState[roomId].votes = {};
+			roomsState[roomId].showAllVotes = false;
+			io.to(roomId).emit("game_restarted");
+		}
+	});
+
+	// 5. Отключение юзера (закрыл вкладку)
+	socket.on("disconnect", () => {
+		const { roomId, userId } = socket;
+		if (roomId && roomsState[roomId]) {
+			// Удаляем юзера из комнаты
+			roomsState[roomId].users = roomsState[roomId].users.filter(
+				(u) => u.id !== userId,
+			);
+
+			// Сообщаем остальным, что он ушел
+			io.to(roomId).emit("users_update", roomsState[roomId].users);
+
+			// Очищаем комнату, если там никого не осталось
+			if (roomsState[roomId].users.length === 0) {
+				delete roomsState[roomId];
+			}
+		}
+		console.log(`❌ Участник отключился: ${socket.id}`);
+	});
+});
+
+// ЗАПУСК СЕРВЕРА! Обрати внимание, теперь мы запускаем `server.listen`, а не `app.listen`
+server.listen(PORT, () => {
+	console.log(`🚀 Server & WebSockets running → http://localhost:${PORT}`);
 });

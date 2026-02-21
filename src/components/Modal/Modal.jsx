@@ -65,24 +65,29 @@ const Modal = ({ isOpen, onClose }) => {
 		setError("");
 
 		try {
-			// Убраны пробелы в URL
 			const url = mode === "login" ? "/api/login" : "/api/register";
 			const res = await fetch(url, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
+				body: JSON.stringify({ email, password }), // name можно добавить позже, если хочешь поле в форме
 			});
 
 			const data = await res.json();
 
 			if (!res.ok) {
-				throw new Error(data.error || "Ошибка сервера");
+				throw new Error(data.error || data.message || "Ошибка сервера");
 			}
 
-			// Успешно: сохраняем JWT-токен и данные в cookie
+			// 🔥 Читаем данные (теперь бэкенд отдаёт правильные ключи)
 			const token = data.token;
 			const user = data.user;
 
+			// 🔥 Защита: если user нет — кидаем ошибку
+			if (!user || !user.email) {
+				throw new Error("Сервер не вернул данные пользователя");
+			}
+
+			// 🔥 Сохраняем в куку (теперь все поля на месте)
 			setCookie(
 				"logged-user-info",
 				{
@@ -90,14 +95,17 @@ const Modal = ({ isOpen, onClose }) => {
 					logged_in: Date.now(),
 					user_id: user.id,
 					user_email: user.email,
-					user_name: user.email.split("@")[0], // простое имя
+					user_name: user.user_name || user.email.split("@")[0], // ← fallback, если null
+					user_picture: user.user_picture || null,
 					jwt: token,
 				},
 				{ path: "/" },
 			);
 
 			onClose();
+			navigate("/"); // или "/account"
 		} catch (err) {
+			console.error("Auth error:", err);
 			setError(err.message || "Неизвестная ошибка");
 		} finally {
 			setLoading(false);

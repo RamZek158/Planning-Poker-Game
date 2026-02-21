@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./GameRoom.css";
 
 import { PlayingCard, Carousel, GameTable } from "../../components";
@@ -7,10 +7,16 @@ import Modal from "../../components/Modal/Modal";
 import { useCookies } from "react-cookie";
 import { useParams, useNavigate } from "react-router";
 
+// Импортируем Socket.IO
+import io from "socket.io-client";
+
 import {
 	getGameSettings,
 	deleteGameRoom,
 } from "../../api/gameSettings/gameSettings";
+
+// Подключаемся к бэкенду (Укажи свой порт, если он отличается)
+const socket = io("http://localhost:3001");
 
 function GameRoom() {
 	const [gameSettings, setGameSettings] = useState({});
@@ -22,168 +28,175 @@ function GameRoom() {
 
 	const [cookies] = useCookies(["logged-user-info"]);
 	const user = cookies["logged-user-info"];
+	const currentUserId = user?.user_id || user?.id;
 
 	const navigate = useNavigate();
 	const { gameId } = useParams();
 
-	const dropdownRef = useRef(null);
-
-	console.log("ROOM PARAM ID:", gameId);
-	console.log("ITEMS FOR CAROUSEL:", gameSettings?.voting_type);
-
-	/* =========================================================
-	   АВТОРИЗАЦИЯ
-	========================================================= */
-
+	// 1. Проверка авторизации
 	useEffect(() => {
 		if (!user) {
 			setModalOpen(true);
-			return;
+		} else {
+			setModalOpen(false);
 		}
-
-		setModalOpen(false);
-
-		const userId = user?.user_id || user?.id;
-		const userName = user?.user_name || user?.email;
-
-		if (!userId) return;
-
-		setUsers([
-			{
-				id: userId,
-				name: userName,
-			},
-		]);
 	}, [user]);
 
-	/* =========================================================
-	   ЗАГРУЗКА НАСТРОЕК КОМНАТЫ
-	========================================================= */
-
+	// 2. Получение настроек комнаты
 	useEffect(() => {
 		if (!gameId) return;
 
 		getGameSettings(gameId)
 			.then((data) => {
-				console.log("GAME SETTINGS FROM DB:", data);
-
 				if (!data) return;
-
 				let voting = data.voting_type;
-
-				// postgres array → js array
 				if (typeof voting === "string") {
 					voting = voting.replace(/[{}]/g, "").split(",");
 				}
-
-				console.log("VOTING TYPE PARSED:", voting);
-
-				setGameSettings({
-					...data,
-					voting_type: voting,
-				});
+				setGameSettings({ ...data, voting_type: voting });
 			})
 			.catch(console.error);
 	}, [gameId]);
 
+	// === ЛОГИКА АДМИНА ===
+	// Теперь мы точно знаем, что gameSettings.user_id — это ID создателя из БД!
+	const isAdmin = gameSettings?.user_id === currentUserId;
+
+	// 3. Подключение к WebSockets
+	useEffect(() => {
+		if (!gameId || !currentUserId) return;
+
+		const currentUser = {
+			id: currentUserId,
+			name: user?.user_name || user?.email,
+		};
+
+		// Входим в комнату
+		socket.emit("join_room", { roomId: gameId, user: currentUser });
+
+		// Слушаем текущее состояние (при первом входе)
+		socket.on("room_state", (state) => {
+			setUsers(state.users);
+			setVotes(state.votes);
+			setShowAllVotes(state.showAllVotes);
+		});
+
+		// Слушаем обновление списка игроков (кто-то зашел/вышел)
+		socket.on("users_update", (updatedUsers) => {
+			setUsers(updatedUsers);
+		});
+
+		// Слушаем новые голоса
+		socket.on("votes_update", (updatedVotes) => {
+			setVotes(updatedVotes);
+		});
+
+		// Слушаем вскрытие карт
+		socket.on("cards_revealed", () => {
+			setShowAllVotes(true);
+		});
+
+		// Слушаем перезапуск игры
+		socket.on("game_restarted", () => {
+			setVotes({});
+			setShowAllVotes(false);
+		});
+
+		// Очистка при выходе из комнаты
+		return () => {
+			socket.off("room_state");
+			socket.off("users_update");
+			socket.off("votes_update");
+			socket.off("cards_revealed");
+			socket.off("game_restarted");
+		};
+	}, [gameId, currentUserId, user]);
+
 	/* =========================================================
-	   КОПИРОВАНИЕ ССЫЛКИ
+	   ЭКШЕНЫ (Отправляем на сервер)
 	========================================================= */
+
+	// Клик по карте карусели
+	const handleCardClick = (value) => {
+		if (!currentUserId || showAllVotes) return;
+		// Локально обновлять не обязательно, но можно для мгновенного отклика
+		// Основная логика — отправить на сервер:
+		socket.emit("vote", { roomId: gameId, userId: currentUserId, value });
+	};
+
+	// Админ нажимает "Показать карты"
+	const handleShowVotes = () => {
+		if (isAdmin) {
+			socket.emit("show_cards", { roomId: gameId });
+		}
+	};
+
+	// Админ нажимает "Новый раунд"
+	const handleRestartGame = () => {
+		if (isAdmin) {
+			socket.emit("restart_game", { roomId: gameId });
+		}
+	};
 
 	const copyLink = () => {
 		const url = window.location.href;
-
-		navigator.clipboard
-			.writeText(url)
-			.then(() => {
-				setShowToast(true);
-				setTimeout(() => setShowToast(false), 3000);
-			})
-			.catch(console.error);
+		navigator.clipboard.writeText(url).then(() => {
+			setShowToast(true);
+			setTimeout(() => setShowToast(false), 3000);
+		});
 	};
-
-	/* =========================================================
-	   ЛОГИКА КАРТ
-	========================================================= */
-
-	const getSuitColor = (suit) => {
-		return suit === "hearts" || suit === "diams" ? "red" : "black";
-	};
-
-	const handleCardClick = (value) => {
-		const userId = user?.user_id || user?.id;
-		if (!userId) return;
-
-		setVotes((prev) => ({
-			...prev,
-			[userId]: { value },
-		}));
-	};
-
-	const allVoted = users.length > 0 ? users.every((u) => votes[u.id]) : false;
-
-	/* =========================================================
-	   УДАЛЕНИЕ КОМНАТЫ
-	========================================================= */
 
 	const handleDeleteRoom = async () => {
-		console.log("DELETE CLICKED", gameId);
-
-		const confirmDelete = window.confirm("Закрыть комнату?");
+		const confirmDelete = window.confirm(
+			"Вы уверены, что хотите закрыть комнату?",
+		);
 		if (!confirmDelete) return;
-
 		try {
-			const res = await deleteGameRoom(gameId);
-			console.log("DELETE RESPONSE:", res);
-
+			await deleteGameRoom(gameId);
 			navigate("/");
 		} catch (e) {
 			console.error("DELETE ERROR:", e);
 		}
 	};
 
-	/* =========================================================
-	   RENDER
-	========================================================= */
-
 	return (
-		<div className='pageContent'>
-			{/* пригласить */}
-			<div className='invite-button-container'>
-				<button onClick={copyLink} className='btn primary'>
-					Пригласить участников
-				</button>
-
-				<div className={`toast ${showToast ? "show" : ""}`}>
-					🔗 Ссылка скопирована!
+		<div className='game-room-page'>
+			<header className='room-top-bar'>
+				<div className='room-info'>
+					<h1 className='room-name'>{gameSettings?.name || "Загрузка..."}</h1>
+					<span className='room-badge'>Planning Poker</span>
 				</div>
+
+				<div className='room-controls'>
+					<button onClick={copyLink} className='room-control-btn share-btn'>
+						<span className='icon'>🔗</span> Копировать ссылку
+					</button>
+					{isAdmin && (
+						<button
+							onClick={handleDeleteRoom}
+							className='room-control-btn close-btn'
+						>
+							<span className='icon'>✕</span> Закрыть комнату
+						</button>
+					)}
+				</div>
+			</header>
+
+			<div className={`toast ${showToast ? "show" : ""}`}>
+				Ссылка скопирована!
 			</div>
 
-			{/* заголовок */}
-			<h1 className='game-title'>
-				На обсуждении: {gameSettings?.name || "Загрузка..."}
-			</h1>
+			<main className='room-main-content'>
+				<GameTable
+					users={users}
+					votes={votes}
+					showAllVotes={showAllVotes}
+					isAdmin={isAdmin}
+					onShowVotes={handleShowVotes} // Передаем функцию
+					onRestartGame={handleRestartGame} // Передаем функцию
+				/>
+			</main>
 
-			<button className='btn danger' onClick={handleDeleteRoom}>
-				Закрыть комнату 🗑
-			</button>
-
-			{/* игровой стол */}
-			<div className='game-room-layout'>
-				<div className='main-content'>
-					<GameTable
-						users={users}
-						votes={votes}
-						showAllVotes={showAllVotes}
-						setShowAllVotes={setShowAllVotes}
-						allVoted={allVoted}
-						getSuitColor={getSuitColor}
-						setVotes={setVotes}
-					/>
-				</div>
-			</div>
-
-			{/* карусель */}
 			<div className='cards-containers'>
 				<Carousel
 					items={gameSettings?.voting_type || []}
@@ -191,11 +204,9 @@ function GameRoom() {
 				/>
 			</div>
 
-			{/* модалка авторизации */}
 			<Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 		</div>
 	);
 }
 
-GameRoom.displayName = "GameRoom";
 export default GameRoom;
