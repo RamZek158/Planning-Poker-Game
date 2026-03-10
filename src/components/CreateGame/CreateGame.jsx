@@ -1,7 +1,7 @@
 import React from "react";
 import "./CreateGame.css";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { T_SHIRT_VOTING_SYSTEM, FIBONACCI_VOTING_SYSTEM } from "../../utils";
 import { saveGameSettings } from "../../api/gameSettings/gameSettings";
 import Modal from "../../components/Modal/Modal";
@@ -57,9 +57,13 @@ const CreateGame = () => {
 				userId: user.user_id,
 				name: gameName,
 				votingType,
-			});
-
-			navigate(`/game/${gameId}`);
+			})
+				.then(() => {
+					navigate(`/game/${gameId}`);
+				})
+				.catch((e) => {
+					console.error("SAVE GAME SETTINGS ERROR:", e);
+				});
 		}
 	}, [gameId, user, gameName, votingType, navigate]);
 

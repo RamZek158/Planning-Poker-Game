@@ -1,12 +1,14 @@
 import React from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import RouteWithHeader from "./RouteWithHeader";
-import { HomePage, CreateGame, GameRoom, PaymentPage, Modal, Account } from "./components";
+import { HomePage, CreateGame, GameRoom, PaymentPage, Account } from "./components";
 import "./App.css";
 
-const CLIENT_ID = "357030709892-0gb5a39m5gcb1tvfl5nc5eqkf37elcio.apps.googleusercontent.com";
+const CLIENT_ID =
+	(typeof window !== "undefined" && window.GOOGLE_CLIENT_ID) ||
+	"357030709892-0gb5a39m5gcb1tvfl5nc5eqkf37elcio.apps.googleusercontent.com";
 
 function App() {
 	return (

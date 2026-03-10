@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Header.css";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo3.png";
 import defaultAvatar from "../../assets/images/user.png"; // ← ПРОВЕРЬ ПУТЬ!
 import { useCookies } from "react-cookie";
 // УДАЛЕНО: googleLogout, useGoogleLogin — перенесено в Modal.jsx
@@ -40,7 +40,7 @@ const Header = () => {
 					<Link to='/' className='left-section'>
 						<img src={logo} alt='Логотип' className='logo-image' />
 					</Link>
-					<p className='whiteTextLink'>Planning Poker Game</p>
+					<p className='whiteTextLink'>Планирование задач</p>
 				</div>
 
 				<div className='right-section'>

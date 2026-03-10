@@ -25,18 +25,17 @@ router.post('/addUser', (req, res) => {
 
 router.delete('/users', (req, res) => {
     const userId = req.query.id;
-    if (userId) {
-        const usersFromFile = JSON.parse(fs.readFileSync('./tmp/users.json', 'utf8'));
-        const updatedUsers = usersFromFile.filter(user => user.id !== userId);
-
-        // console.log('userId: ', userId);
-        let jsonString = JSON.stringify(updatedUsers, null, 4);
-        fs.writeFileSync('./tmp/users.json', jsonString);
-
-        // console.log('updatedUsers: ', updatedUsers);
-        res.json(updatedUsers);
+    if (!userId) {
+        return res.status(400).send('User id is required');
     }
-    res.status(500).send('Internal Server Error');
+
+    const usersFromFile = JSON.parse(fs.readFileSync('./tmp/users.json', 'utf8'));
+    const updatedUsers = usersFromFile.filter(user => user.id !== userId);
+
+    let jsonString = JSON.stringify(updatedUsers, null, 4);
+    fs.writeFileSync('./tmp/users.json', jsonString);
+
+    return res.json(updatedUsers);
 
 });
 
@@ -51,20 +50,24 @@ router.post('/save-game-settings', (req, res) => {
 });
 
 // === ПОЛУЧЕНИЕ НАСТРОЕК ИГРЫ ===
-router.get('/game-settings', (req, res) => {
+router.get('/game-settings/:id', (req, res) => {
+    const { id } = req.params;
     const raw = fs.readFileSync('./tmp/gameSettings.json', 'utf8');
 
     try {
         const data = JSON.parse(raw);
-        res.json(data);
+        if (Array.isArray(data)) {
+            return res.json(data.find((item) => item.id === id) || null);
+        }
+        return res.json(data?.id === id ? data : null);
     } catch (e) {
         res.status(500).send('Ошибка чтения файла настроек игры');
     }
 });
 
 // === УДАЛЕНИЕ НАСТРОЕК ИГРЫ ===
-router.delete('/game-settings', (req, res) => {
-    const { id } = req.query;
+router.delete('/game-settings/:id', (req, res) => {
+    const { id } = req.params;
 
     if (!id) {
         return res.status(400).send('ID не указан');

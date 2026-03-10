@@ -29,9 +29,16 @@ if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
 app.use(helmet());
 
 // CORS
+const corsOrigins = [
+	process.env.CLIENT_URL,
+	"http://localhost:3000",
+	"http://localhost:8080",
+	"http://localhost:3001",
+].filter(Boolean);
+
 app.use(
 	cors({
-		origin: ["http://localhost:8080", "http://localhost:3001"],
+		origin: corsOrigins,
 		credentials: true,
 	}),
 );
@@ -91,6 +98,24 @@ const authenticateToken = (req, res, next) => {
 	});
 };
 
+const resolveRequestActor = (req) => {
+	const token = req.headers.authorization?.split(" ")[1];
+	if (token) {
+		try {
+			return jwt.verify(token, process.env.JWT_SECRET);
+		} catch (e) {
+			// Allow owner fallback for legacy sessions with expired access tokens.
+		}
+	}
+
+	const userId = req.headers["x-user-id"];
+	if (userId) {
+		return { id: userId, role: "user" };
+	}
+
+	return null;
+};
+
 /* =========================================================
 	AUTH
 ========================================================= */
@@ -129,6 +154,7 @@ app.post("/api/register", async (req, res) => {
 		res.status(201).json({
 			success: true,
 			token: generateAccessToken(newUser), // ← именно "token", не "accessToken"
+			refreshToken: generateRefreshToken(newUser),
 			user: {
 				id: newUser.id,
 				email: newUser.email,
@@ -166,6 +192,7 @@ app.post("/api/login", async (req, res) => {
 		res.json({
 			success: true,
 			token: generateAccessToken(user), // ← "token", а не "accessToken"
+			refreshToken: generateRefreshToken(user),
 			user: {
 				id: user.id,
 				email: user.email,
@@ -192,8 +219,10 @@ app.post("/api/refresh", (req, res) => {
 	jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
 		if (err) return res.status(403).json({ error: "Invalid refresh token" });
 
+		const token = generateAccessToken({ id: user.id, role: "user" });
 		res.json({
-			accessToken: generateAccessToken({ id: user.id, role: "user" }),
+			token,
+			accessToken: token,
 		});
 	});
 });
@@ -272,6 +301,24 @@ app.delete("/api/game-settings/:id", async (req, res) => {
 	const { id } = req.params;
 
 	try {
+		const actor = resolveRequestActor(req);
+		if (!actor) {
+			return res.status(401).json({ error: "Token or user id required" });
+		}
+
+		const room = await pool.query(
+			"SELECT user_id FROM game_settings WHERE id=$1 AND is_deleted=false",
+			[id],
+		);
+		if (!room.rows.length) {
+			return res.status(404).json({ error: "Комната не найдена" });
+		}
+
+		const ownerId = room.rows[0].user_id;
+		if (actor.id !== ownerId && actor.role !== "admin") {
+			return res.status(403).json({ error: "Forbidden" });
+		}
+
 		await pool.query("UPDATE game_settings SET is_deleted=true WHERE id=$1", [
 			id,
 		]);
@@ -348,11 +395,7 @@ const server = http.createServer(app);
 // Настраиваем Socket.IO с CORS
 const io = new Server(server, {
 	cors: {
-		origin: [
-			"http://localhost:3000",
-			"http://localhost:8080",
-			"http://localhost:3001",
-		],
+		origin: corsOrigins,
 		credentials: true,
 	},
 });
@@ -361,13 +404,39 @@ const io = new Server(server, {
 // Формат: { roomId: { users: [{id, name}], votes: {userId: {value}}, showAllVotes: false } }
 const roomsState = {};
 
+const isRoomAdmin = async (roomId, userId) => {
+	try {
+		const room = await pool.query(
+			"SELECT user_id FROM game_settings WHERE id=$1 AND is_deleted=false",
+			[roomId],
+		);
+		if (!room.rows.length) return false;
+		return room.rows[0].user_id === userId;
+	} catch (e) {
+		console.error("Room admin check error:", e);
+		return false;
+	}
+};
+
 io.on("connection", (socket) => {
 	console.log(`🔌 Участник подключился: ${socket.id}`);
 
 	// 1. Присоединение к комнате
-	socket.on("join_room", ({ roomId, user }) => {
+	socket.on("join_room", ({ roomId, user, token }) => {
+		let effectiveUserId = user.id;
+		if (token) {
+			try {
+				const payload = jwt.verify(token, process.env.JWT_SECRET);
+				effectiveUserId = payload.id;
+			} catch (e) {
+				console.warn("Socket join with invalid token");
+			}
+		}
+
+		const safeUser = { ...user, id: effectiveUserId };
+
 		socket.join(roomId);
-		socket.userId = user.id;
+		socket.userId = effectiveUserId;
 		socket.roomId = roomId;
 
 		// Инициализируем комнату, если её ещё нет
@@ -378,8 +447,8 @@ io.on("connection", (socket) => {
 		const room = roomsState[roomId];
 
 		// Добавляем юзера, если его там нет
-		if (!room.users.find((u) => u.id === user.id)) {
-			room.users.push(user);
+		if (!room.users.find((u) => u.id === safeUser.id)) {
+			room.users.push(safeUser);
 		}
 
 		// Отправляем подключившемуся текущее состояние комнаты
@@ -399,16 +468,16 @@ io.on("connection", (socket) => {
 	});
 
 	// 3. Админ показывает карты
-	socket.on("show_cards", ({ roomId }) => {
-		if (roomsState[roomId]) {
+	socket.on("show_cards", async ({ roomId }) => {
+		if (roomsState[roomId] && (await isRoomAdmin(roomId, socket.userId))) {
 			roomsState[roomId].showAllVotes = true;
 			io.to(roomId).emit("cards_revealed");
 		}
 	});
 
 	// 4. Админ перезапускает игру
-	socket.on("restart_game", ({ roomId }) => {
-		if (roomsState[roomId]) {
+	socket.on("restart_game", async ({ roomId }) => {
+		if (roomsState[roomId] && (await isRoomAdmin(roomId, socket.userId))) {
 			roomsState[roomId].votes = {};
 			roomsState[roomId].showAllVotes = false;
 			io.to(roomId).emit("game_restarted");

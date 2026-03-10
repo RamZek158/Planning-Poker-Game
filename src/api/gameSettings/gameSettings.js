@@ -1,4 +1,12 @@
-const API = "http://localhost:3001/api";
+const API = "/api";
+
+const parseJson = async (res) => {
+	const data = await res.json().catch(() => ({}));
+	if (!res.ok) {
+		throw new Error(data.error || data.message || `HTTP ${res.status}`);
+	}
+	return data;
+};
 
 export const saveGameSettings = (gameSettings) => {
 	return fetch(`${API}/save-game-settings`, {
@@ -7,7 +15,7 @@ export const saveGameSettings = (gameSettings) => {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(gameSettings),
-	}).then((res) => res.json());
+	}).then(parseJson);
 };
 
 /**
@@ -15,7 +23,7 @@ export const saveGameSettings = (gameSettings) => {
  * @returns {Promise<Object>} данные о gameId, названии игры и системе голосования
  */
 export const getGameSettings = (id) => {
-	return fetch(`${API}/game-settings/${id}`).then((res) => res.json());
+	return fetch(`${API}/game-settings/${id}`).then(parseJson);
 };
 
 /**
@@ -24,11 +32,21 @@ export const getGameSettings = (id) => {
  * @returns {Promise<Object>} результат удаления
  */
 
-export const deleteGameRoom = (id) => {
+export const deleteGameRoom = (id, { token, userId } = {}) => {
+	const headers = {
+		"Content-Type": "application/json",
+	};
+
+	if (token) {
+		headers.Authorization = `Bearer ${token}`;
+	}
+
+	if (userId) {
+		headers["X-User-Id"] = userId;
+	}
+
 	return fetch(`${API}/game-settings/${id}`, {
 		method: "DELETE",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	}).then((res) => res.json());
+		headers,
+	}).then(parseJson);
 };

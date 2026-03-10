@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Modal.css";
 
 const Modal = ({ isOpen, onClose }) => {
-	const [cookies, setCookie] = useCookies(["logged-user-info"]);
+	const [, setCookie] = useCookies(["logged-user-info"]);
+	const navigate = useNavigate();
 	const [mode, setMode] = useState("login"); // 'login' или 'register'
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -22,7 +24,7 @@ const Modal = ({ isOpen, onClose }) => {
 		onSuccess: async (tokenResponse) => {
 			try {
 				const userInfo = await axios.get(
-					"https://www.googleapis.com/oauth2/v3/userinfo  ",
+					"https://www.googleapis.com/oauth2/v3/userinfo",
 					{
 						headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
 					},
@@ -98,6 +100,7 @@ const Modal = ({ isOpen, onClose }) => {
 					user_name: user.user_name || user.email.split("@")[0], // ← fallback, если null
 					user_picture: user.user_picture || null,
 					jwt: token,
+					refresh_jwt: data.refreshToken || null,
 				},
 				{ path: "/" },
 			);

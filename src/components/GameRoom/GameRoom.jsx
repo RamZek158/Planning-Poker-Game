@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./GameRoom.css";
 
-import { PlayingCard, Carousel, GameTable } from "../../components";
+import { Carousel, GameTable } from "../../components";
 import Modal from "../../components/Modal/Modal";
 
 import { useCookies } from "react-cookie";
-import { useParams, useNavigate } from "react-router";
-
-// Импортируем Socket.IO
+import { useParams, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
 import {
@@ -15,14 +13,19 @@ import {
 	deleteGameRoom,
 } from "../../api/gameSettings/gameSettings";
 
-// Подключаемся к бэкенду (Укажи свой порт, если он отличается)
-const socket = io("http://localhost:3001");
+const SOCKET_URL =
+	typeof window !== "undefined" && window.location.hostname === "localhost"
+		? "http://localhost:3001"
+		: window.location.origin;
+const socket = io(SOCKET_URL);
 
 function GameRoom() {
 	const [gameSettings, setGameSettings] = useState({});
 	const [users, setUsers] = useState([]);
 	const [modalOpen, setModalOpen] = useState(false);
+	const [confirmCloseOpen, setConfirmCloseOpen] = useState(false);
 	const [showToast, setShowToast] = useState(false);
+	const [deleteError, setDeleteError] = useState("");
 	const [votes, setVotes] = useState({});
 	const [showAllVotes, setShowAllVotes] = useState(false);
 
@@ -33,7 +36,6 @@ function GameRoom() {
 	const navigate = useNavigate();
 	const { gameId } = useParams();
 
-	// 1. Проверка авторизации
 	useEffect(() => {
 		if (!user) {
 			setModalOpen(true);
@@ -42,7 +44,6 @@ function GameRoom() {
 		}
 	}, [user]);
 
-	// 2. Получение настроек комнаты
 	useEffect(() => {
 		if (!gameId) return;
 
@@ -58,51 +59,46 @@ function GameRoom() {
 			.catch(console.error);
 	}, [gameId]);
 
-	// === ЛОГИКА АДМИНА ===
-	// Теперь мы точно знаем, что gameSettings.user_id — это ID создателя из БД!
 	const isAdmin = gameSettings?.user_id === currentUserId;
+	const canDeleteRoom = isAdmin;
 
-	// 3. Подключение к WebSockets
 	useEffect(() => {
 		if (!gameId || !currentUserId) return;
 
 		const currentUser = {
 			id: currentUserId,
-			name: user?.user_name || user?.email,
+			name: user?.user_name || user?.user_email,
 		};
 
-		// Входим в комнату
-		socket.emit("join_room", { roomId: gameId, user: currentUser });
+		socket.emit("join_room", {
+			roomId: gameId,
+			user: currentUser,
+			token: user?.jwt,
+		});
 
-		// Слушаем текущее состояние (при первом входе)
 		socket.on("room_state", (state) => {
 			setUsers(state.users);
 			setVotes(state.votes);
 			setShowAllVotes(state.showAllVotes);
 		});
 
-		// Слушаем обновление списка игроков (кто-то зашел/вышел)
 		socket.on("users_update", (updatedUsers) => {
 			setUsers(updatedUsers);
 		});
 
-		// Слушаем новые голоса
 		socket.on("votes_update", (updatedVotes) => {
 			setVotes(updatedVotes);
 		});
 
-		// Слушаем вскрытие карт
 		socket.on("cards_revealed", () => {
 			setShowAllVotes(true);
 		});
 
-		// Слушаем перезапуск игры
 		socket.on("game_restarted", () => {
 			setVotes({});
 			setShowAllVotes(false);
 		});
 
-		// Очистка при выходе из комнаты
 		return () => {
 			socket.off("room_state");
 			socket.off("users_update");
@@ -112,26 +108,17 @@ function GameRoom() {
 		};
 	}, [gameId, currentUserId, user]);
 
-	/* =========================================================
-	   ЭКШЕНЫ (Отправляем на сервер)
-	========================================================= */
-
-	// Клик по карте карусели
 	const handleCardClick = (value) => {
 		if (!currentUserId || showAllVotes) return;
-		// Локально обновлять не обязательно, но можно для мгновенного отклика
-		// Основная логика — отправить на сервер:
 		socket.emit("vote", { roomId: gameId, userId: currentUserId, value });
 	};
 
-	// Админ нажимает "Показать карты"
 	const handleShowVotes = () => {
 		if (isAdmin) {
 			socket.emit("show_cards", { roomId: gameId });
 		}
 	};
 
-	// Админ нажимает "Новый раунд"
 	const handleRestartGame = () => {
 		if (isAdmin) {
 			socket.emit("restart_game", { roomId: gameId });
@@ -141,21 +128,24 @@ function GameRoom() {
 	const copyLink = () => {
 		const url = window.location.href;
 		navigator.clipboard.writeText(url).then(() => {
+			setDeleteError("");
 			setShowToast(true);
 			setTimeout(() => setShowToast(false), 3000);
 		});
 	};
 
 	const handleDeleteRoom = async () => {
-		const confirmDelete = window.confirm(
-			"Вы уверены, что хотите закрыть комнату?",
-		);
-		if (!confirmDelete) return;
 		try {
-			await deleteGameRoom(gameId);
+			setDeleteError("");
+			await deleteGameRoom(gameId, {
+				token: user?.jwt,
+				userId: currentUserId,
+			});
+			setConfirmCloseOpen(false);
 			navigate("/");
 		} catch (e) {
 			console.error("DELETE ERROR:", e);
+			setDeleteError(e.message || "Не удалось закрыть комнату");
 		}
 	};
 
@@ -164,16 +154,19 @@ function GameRoom() {
 			<header className='room-top-bar'>
 				<div className='room-info'>
 					<h1 className='room-name'>{gameSettings?.name || "Загрузка..."}</h1>
-					<span className='room-badge'>Planning Poker</span>
+					<span className='room-badge'>На обсуждение...</span>
 				</div>
 
 				<div className='room-controls'>
 					<button onClick={copyLink} className='room-control-btn share-btn'>
 						<span className='icon'>🔗</span> Копировать ссылку
 					</button>
-					{isAdmin && (
+					{canDeleteRoom && (
 						<button
-							onClick={handleDeleteRoom}
+							onClick={() => {
+								setDeleteError("");
+								setConfirmCloseOpen(true);
+							}}
 							className='room-control-btn close-btn'
 						>
 							<span className='icon'>✕</span> Закрыть комнату
@@ -185,6 +178,9 @@ function GameRoom() {
 			<div className={`toast ${showToast ? "show" : ""}`}>
 				Ссылка скопирована!
 			</div>
+			<div className={`toast toast-error ${deleteError ? "show" : ""}`}>
+				{deleteError}
+			</div>
 
 			<main className='room-main-content'>
 				<GameTable
@@ -192,8 +188,8 @@ function GameRoom() {
 					votes={votes}
 					showAllVotes={showAllVotes}
 					isAdmin={isAdmin}
-					onShowVotes={handleShowVotes} // Передаем функцию
-					onRestartGame={handleRestartGame} // Передаем функцию
+					onShowVotes={handleShowVotes}
+					onRestartGame={handleRestartGame}
 				/>
 			</main>
 
@@ -203,6 +199,38 @@ function GameRoom() {
 					onCardClick={handleCardClick}
 				/>
 			</div>
+
+			{confirmCloseOpen && (
+				<div
+					className='room-dialog-backdrop'
+					onClick={() => setConfirmCloseOpen(false)}
+				>
+					<div className='room-dialog' onClick={(e) => e.stopPropagation()}>
+						<div className='room-dialog-eyebrow'>Закрытие комнаты</div>
+						<h2 className='room-dialog-title'>Закрыть эту сессию?</h2>
+						<p className='room-dialog-text'>
+							Комната будет скрыта, а участники больше не смогут зайти по этой
+							ссылке.
+						</p>
+						<div className='room-dialog-actions'>
+							<button
+								type='button'
+								className='room-dialog-btn room-dialog-btn-secondary'
+								onClick={() => setConfirmCloseOpen(false)}
+							>
+								Оставить открытой
+							</button>
+							<button
+								type='button'
+								className='room-dialog-btn room-dialog-btn-danger'
+								onClick={handleDeleteRoom}
+							>
+								Закрыть комнату
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 
 			<Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 		</div>
