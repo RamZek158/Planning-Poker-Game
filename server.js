@@ -72,13 +72,12 @@ const pool = new Pool({
 	JWT HELPERS
 ========================================================= */
 
-// генерирует access токен (15 минут)
+
 const generateAccessToken = (user) =>
 	jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
 		expiresIn: "15m",
 	});
 
-// генерирует refresh токен (30 дней)
 const generateRefreshToken = (user) =>
 	jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, {
 		expiresIn: "30d",

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Header.css";
-import logo from "../../assets/images/logo3.png";
+import logo from "../../assets/images/logowiner.png";
 import defaultAvatar from "../../assets/images/user.png"; // ← ПРОВЕРЬ ПУТЬ!
 import { useCookies } from "react-cookie";
 // УДАЛЕНО: googleLogout, useGoogleLogin — перенесено в Modal.jsx

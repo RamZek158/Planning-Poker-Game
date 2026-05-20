@@ -1,0 +1,61 @@
+Planning Poker Game
+
+This project is a web application for team estimation sessions in the Planning Poker format.
+
+Main idea:
+- A user creates a room for discussing and estimating tasks.
+- Other participants join the room by link.
+- Each participant chooses a card privately.
+- After everyone votes, the room owner reveals the cards.
+- The system shows a final result based on the selected voting scale.
+
+Core product purpose:
+- Help Agile teams estimate tasks together online.
+- Support fast remote collaboration in real time.
+- Provide a simple room-based workflow without heavy setup.
+
+Main user roles:
+- Room owner / moderator:
+  creates a room, shares the link, reveals cards, starts a new round, closes the room.
+- Participant:
+  joins a room, votes, waits for reveal, takes part in the next round.
+
+Supported voting systems:
+- Modified Fibonacci scale: numeric estimation cards.
+- T-shirt scale: XS, S, M, L, XL, XXL.
+- Special cards like "?" and coffee are also supported.
+
+Final result logic:
+- Numeric scale returns an average numeric estimate.
+- T-shirt scale returns a summarized size result.
+- Special cards are handled as meaningful outcomes instead of being ignored.
+
+Main pages and features:
+- Home page with product presentation.
+- Create room page.
+- Game room page with live voting.
+- Login / registration modal.
+- Account page.
+- Payment / premium-style page stub.
+
+Technical architecture:
+- Frontend: React + React Router + CSS.
+- Backend: Node.js + Express.
+- Database: PostgreSQL.
+- Realtime communication: Socket.IO.
+- Auth: JWT-based auth with cookie-stored user session data on frontend.
+
+Important backend concepts:
+- Rooms are stored as game settings.
+- A room has an owner, room name, voting type and soft-delete flag.
+- WebSocket state keeps connected users, their votes and reveal state.
+
+Important frontend concepts:
+- GameRoom is the central realtime screen.
+- GameTable displays the table state and final estimation result.
+- Carousel shows available cards for the selected voting scale.
+- Modal handles login and registration.
+
+Product tone:
+- The site is meant to feel like a modern collaborative estimation tool for Agile teams.
+- It combines room creation, realtime voting and quick consensus around task complexity.
