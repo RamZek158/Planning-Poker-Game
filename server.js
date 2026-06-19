@@ -76,25 +76,24 @@ app.use("/api/register", authLimiter);
 	DATABASE
 ========================================================= */
 
-const databaseUrl = process.env.DATABASE_URL?.trim();
-const usingDatabaseUrl = Boolean(databaseUrl);
-const poolConfig = usingDatabaseUrl
-	? {
-			connectionString: databaseUrl,
-			ssl:
-				process.env.NODE_ENV === "production"
+const usingDatabaseUrl = Boolean(process.env.DATABASE_URL);
+const pool = new Pool(
+	process.env.DATABASE_URL
+		? {
+				connectionString: process.env.DATABASE_URL,
+				ssl: process.env.DATABASE_URL
 					? { rejectUnauthorized: false }
 					: false,
-		}
-	: {
-			user: process.env.DB_USER,
-			host: process.env.DB_HOST,
-			database: process.env.DB_NAME,
-			password: process.env.DB_PASSWORD,
-			port: Number(process.env.DB_PORT || 5432),
-		};
-
-const pool = new Pool(poolConfig);
+			}
+		: {
+				user: process.env.DB_USER,
+				host: process.env.DB_HOST,
+				database: process.env.DB_NAME,
+				password: process.env.DB_PASSWORD,
+				port: Number(process.env.DB_PORT || 5432),
+				ssl: false,
+			},
+);
 /* =========================================================
 	JWT HELPERS
 ========================================================= */

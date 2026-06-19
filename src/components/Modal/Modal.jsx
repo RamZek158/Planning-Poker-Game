@@ -139,6 +139,7 @@ const Modal = ({ isOpen, onClose }) => {
 					<div className='input-group'>
 						<input
 							type='email'
+							autoComplete='username'
 							placeholder='Email'
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -150,6 +151,7 @@ const Modal = ({ isOpen, onClose }) => {
 					<div className='input-group'>
 						<input
 							type='password'
+							autoComplete='current-password'
 							placeholder='Пароль'
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
