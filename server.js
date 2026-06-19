@@ -11,6 +11,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const PORT = process.env.API_PORT || 3001;
+const isProduction = process.env.NODE_ENV === "production";
 
 /* =========================================================
 	ENV VALIDATION
@@ -29,16 +30,24 @@ if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
 app.use(helmet());
 
 // CORS
-const corsOrigins = [
-	process.env.CLIENT_URL,
-	"http://localhost:3000",
-	"http://localhost:8080",
-	"http://localhost:3001",
-].filter(Boolean);
+const corsOrigins = isProduction
+	? [process.env.CLIENT_URL].filter(Boolean)
+	: [
+			process.env.CLIENT_URL,
+			"http://localhost:3000",
+			"http://localhost:8080",
+			"http://localhost:3001",
+		].filter(Boolean);
 
 app.use(
 	cors({
-		origin: corsOrigins,
+		origin(origin, callback) {
+			if (!origin || corsOrigins.includes(origin)) {
+				return callback(null, true);
+			}
+
+			return callback(new Error("Not allowed by CORS"));
+		},
 		credentials: true,
 	}),
 );
@@ -79,8 +88,6 @@ const poolConfig = usingDatabaseUrl
 		};
 
 const pool = new Pool(poolConfig);
-const dbConfigSource = usingDatabaseUrl ? "DATABASE_URL" : "DB_* fallback";
-
 /* =========================================================
 	JWT HELPERS
 ========================================================= */
@@ -531,7 +538,15 @@ io.on("connection", (socket) => {
 
 // ЗАПУСК СЕРВЕРА! Обрати внимание, теперь мы запускаем `server.listen`, а не `app.listen`
 server.listen(PORT, () => {
-	console.log(`[startup] Database config: ${dbConfigSource}`);
+	console.log(
+		"Database mode:",
+		usingDatabaseUrl ? "DATABASE_URL" : "DB_HOST",
+	);
+	console.log("CLIENT_URL:", process.env.CLIENT_URL);
 	console.log(`[startup] API port: ${PORT}`);
-	console.log(`🚀 Server & WebSockets running → http://localhost:${PORT}`);
+	console.log(
+		isProduction
+			? `🚀 Server & WebSockets running on internal port ${PORT}`
+			: `🚀 Server & WebSockets running → http://localhost:${PORT}`,
+	);
 });
