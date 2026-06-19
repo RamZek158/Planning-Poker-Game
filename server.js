@@ -13,6 +13,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const PORT = process.env.PORT || 8088;
+const HOST = "0.0.0.0";
 const isProduction = process.env.NODE_ENV === "production";
 const RAILWAY_APP_URL =
 	"https://planning-poker-game-production-c411.up.railway.app";
@@ -595,7 +596,7 @@ const startServer = async () => {
 	try {
 		await ensureDatabaseSchema();
 
-		server.listen(PORT, () => {
+		server.listen(PORT, HOST, () => {
 			console.log(
 				"Database mode:",
 				usingDatabaseUrl ? "DATABASE_URL" : "DB_HOST",
@@ -603,9 +604,10 @@ const startServer = async () => {
 			console.log("CLIENT_URL:", process.env.CLIENT_URL);
 			console.log("Allowed CORS origins:", corsOrigins);
 			console.log(`[startup] API port: ${PORT}`);
+			console.log(`[startup] API host: ${HOST}`);
 			console.log(
 				isProduction
-					? `🚀 Server & WebSockets running on internal port ${PORT}`
+					? `🚀 Server & WebSockets running on ${HOST}:${PORT}`
 					: `🚀 Server & WebSockets running → http://localhost:${PORT}`,
 			);
 		});
