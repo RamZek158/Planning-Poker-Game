@@ -3,6 +3,7 @@
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
+	gap: 16px;
 	padding: 1rem 2rem;
 	background-color: var(--bg-header-color);
 	color: var(--text-color);
@@ -18,8 +19,8 @@
 }
 
 .logo-image {
-	height: 120px;
-	width: 120px;
+	height: 50px;
+	width: 50px;
 	object-fit: contain;
 	flex-shrink: 0;
 }
@@ -38,6 +39,7 @@
 	font-size: 1.25em;
 	color: white;
 	font-weight: 700;
+	margin: 0;
 }
 
 /* Правая секция */
@@ -166,11 +168,29 @@
 }
 
 @media (max-width: 820px) {
+	.header {
+		padding: 1rem 1.25rem;
+	}
+
+	.left-section {
+		width: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+		text-align: center;
+	}
+
+	.whiteTextLink {
+		width: 100%;
+		text-align: center;
+	}
+
 	.right-section {
 		width: 100%;
+		justify-content: center;
 	}
 	.auth-buttons {
 		width: 100%;
+		justify-content: center;
 	}
 	.auth-buttons button {
 		width: 100%;
@@ -189,11 +209,29 @@
 }
 
 @media (max-width: 576px) {
+	.header {
+		padding: 0.75rem 1rem;
+	}
+
+	.left-section {
+		gap: 0.75rem;
+	}
+
+	.logo-image {
+		height: 84px;
+		width: 84px;
+	}
+
+	.whiteTextLink {
+		font-size: 1rem;
+	}
+
 	.right-section {
 		width: 100%;
 	}
 	.auth-buttons {
 		width: 100%;
+		flex-direction: column;
 	}
 	.auth-buttons button {
 		width: 100%;
@@ -203,8 +241,11 @@
 	}
 	.profile {
 		justify-content: center;
+		flex-wrap: wrap;
 	}
 	.menuItem {
+		position: static;
+		margin-top: 8px;
 		background-color: var(--bg-header-color);
 		border-bottom-left-radius: 5px;
 		border-bottom-right-radius: 5px;

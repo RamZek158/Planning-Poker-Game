@@ -7,6 +7,7 @@ import Modal from "../../components/Modal/Modal";
 import { useCookies } from "react-cookie";
 import { useParams, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import { normalizeVotingType } from "../../utils";
 
 import {
 	getGameSettings,
@@ -54,7 +55,10 @@ function GameRoom() {
 				if (typeof voting === "string") {
 					voting = voting.replace(/[{}]/g, "").split(",");
 				}
-				setGameSettings({ ...data, voting_type: voting });
+				setGameSettings({
+					...data,
+					voting_type: normalizeVotingType(voting),
+				});
 			})
 			.catch(console.error);
 	}, [gameId]);

@@ -8,6 +8,11 @@ body {
 	background-color: var(--bg-header-color);
 }
 
+img {
+	max-width: 100%;
+	height: auto;
+}
+
 .app {
 	display: flex;
 	flex-direction: column;
@@ -36,12 +41,16 @@ main {
 
 @media (max-width: 768px) {
 	.pageContainer {
-		margin: 20px 50px;
+		margin: 20px 32px;
 	}
 }
 
 @media (max-width: 576px) {
+	main {
+		padding: 1.5rem 0;
+	}
+
 	.pageContainer {
-		margin: 20px 25px;
+		margin: 16px;
 	}
 }

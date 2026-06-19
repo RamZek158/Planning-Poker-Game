@@ -1,9 +1,9 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import { CookiesProvider } from "react-cookie";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import RouteWithHeader from "./RouteWithHeader";
-import { HomePage, CreateGame, GameRoom, PaymentPage, Account } from "./components";
+import { HomePage, CreateGame, GameRoom, Account } from "./components";
 import "./App.css";
 
 const CLIENT_ID =
@@ -18,7 +18,7 @@ function App() {
 					<Routes>
 						<Route path="/" element={<RouteWithHeader />}>
 							<Route index element={<HomePage />} />
-							<Route path="payment" element={<PaymentPage />} />
+							<Route path="payment" element={<Navigate to="/" replace />} />
 							<Route path="create-game" element={<CreateGame />} />
 							<Route path="game/:gameId" element={<GameRoom />} />
 							<Route path="/account" element={<Account />} />

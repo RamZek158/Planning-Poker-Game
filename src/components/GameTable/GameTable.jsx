@@ -4,9 +4,10 @@ import { PlayingCard } from "../../components";
 import {
 	T_SHIRT_VOTING_SYSTEM,
 	FIBONACCI_VOTING_SYSTEM,
+	normalizeVotingValue,
 } from "../../utils";
 
-const SPECIAL_VOTES = new Set(["?", "☕"]);
+const SPECIAL_VOTES = new Set(["?", "\u2615"]);
 
 const NUMERIC_SCALE = FIBONACCI_VOTING_SYSTEM.filter(
 	(value) => !SPECIAL_VOTES.has(value),
@@ -15,10 +16,7 @@ const T_SHIRT_SCALE = T_SHIRT_VOTING_SYSTEM.filter(
 	(value) => !SPECIAL_VOTES.has(value),
 );
 
-const normalizeVote = (value) => {
-	if (value === "ВЅ" || value === "½" || value === "1/2") return "½";
-	return value;
-};
+const normalizeVote = (value) => normalizeVotingValue(value);
 
 const getMostFrequentVote = (values) => {
 	const counts = new Map();

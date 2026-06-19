@@ -36,7 +36,6 @@ Main pages and features:
 - Game room page with live voting.
 - Login / registration modal.
 - Account page.
-- Payment / premium-style page stub.
 
 Technical architecture:
 - Frontend: React + React Router + CSS.

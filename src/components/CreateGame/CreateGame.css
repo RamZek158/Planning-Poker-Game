@@ -1,19 +1,25 @@
+.createGamePage {
+	min-height: calc(100vh - 220px);
+}
+
 .createGameSection {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	padding-top: 100px;
+	width: 100%;
+	max-width: 500px;
+	padding-top: 0;
 }
 
-/* Общие стили для input и select */
-
 .createGameItem {
-	width: 500px;
+	width: 100%;
+	max-width: 500px;
+	box-sizing: border-box;
 }
 
 input.createGameItem {
-	width: 480px;
+	width: 100%;
 }
 
 input,
@@ -26,31 +32,28 @@ select {
 	transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Фокус на поле */
-
 input:focus,
 select:focus {
 	border-color: #007bff;
 	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
-/* Планшеты */
 
 @media (max-width: 768px) {
-	.createGameItem {
-		width: 400px;
+	.createGamePage {
+		min-height: calc(100vh - 180px);
 	}
-	input.createGameItem {
-		width: 380px;
+
+	.createGameSection {
+		padding-top: 0;
 	}
 }
 
-/* Мобильные устройства */
-
 @media (max-width: 576px) {
-	.createGameItem {
-		width: 300px;
+	.createGamePage {
+		min-height: calc(100vh - 150px);
 	}
-	input.createGameItem {
-		width: 280px;
+
+	.createGameSection {
+		padding-top: 0;
 	}
 }

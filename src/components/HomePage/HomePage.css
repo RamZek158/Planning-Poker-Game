@@ -2,10 +2,12 @@
 .container {
 	font-family: "Segoe UI", sans-serif;
 	max-width: 1200px;
+	width: 100%;
 	margin: 0 auto;
 	padding: 20px;
 	line-height: 1.6;
 	color: #eaeaea;
+	box-sizing: border-box;
 }
 
 /* === Hero Section === */
@@ -15,6 +17,7 @@
 	background-color: #243441;
 	border-radius: 10px;
 	margin-bottom: 40px;
+	box-sizing: border-box;
 }
 
 .hero-title {
@@ -50,6 +53,7 @@
 	border-radius: 8px;
 	background-color: #243441;
 	transition: box-shadow 0.3s ease;
+	box-sizing: border-box;
 }
 
 .feature-card:hover {
@@ -72,6 +76,7 @@
 	text-align: center;
 	flex: 1 1 30%;
 	max-width: 300px;
+	box-sizing: border-box;
 }
 
 .step-number {
@@ -87,51 +92,13 @@
 	margin-bottom: 10px;
 }
 
-/* === Pricing Section === */
-.pricing {
-	margin-bottom: 60px;
-}
-
-.pricing-plans {
-	display: flex;
-	justify-content: center;
-	gap: 30px;
-	flex-wrap: wrap;
-}
-
-.plan-card {
-	padding: 30px;
-	border: 1px solid #334756;
-	border-radius: 10px;
-	text-align: center;
-	width: 300px;
-	background-color: #243441;
-	transition: box-shadow 0.3s ease;
-}
-
-.plan-card:hover {
-	box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
-}
-
-.price {
-	font-size: 1.2rem;
-	margin-bottom: 20px;
-	color: #ffffff;
-}
-
-.plan-features {
-	list-style: none;
-	padding-left: 0;
-	margin-bottom: 20px;
-	color: #cfcfcf;
-}
-
 /* === Final CTA === */
 .final-cta {
 	text-align: center;
 	padding: 60px 20px;
 	background-color: #243441;
 	border-radius: 10px;
+	box-sizing: border-box;
 }
 
 .cta-title {
@@ -145,4 +112,82 @@
 	font-size: 1.1rem;
 	margin-bottom: 20px;
 	color: #c0c0c0;
+}
+
+@media (max-width: 768px) {
+	.container {
+		padding: 16px;
+	}
+
+	.hero {
+		padding: 56px 20px 48px;
+		margin-bottom: 32px;
+	}
+
+	.hero-title {
+		font-size: 2rem;
+		line-height: 1.2;
+	}
+
+	.hero-subtitle {
+		font-size: 1.05rem;
+		margin: 16px 0 24px;
+	}
+
+	.section-title,
+	.cta-title {
+		font-size: 1.75rem;
+		margin-bottom: 28px;
+	}
+
+	.feature-grid {
+		gap: 20px;
+	}
+
+	.steps {
+		gap: 16px;
+	}
+}
+
+@media (max-width: 576px) {
+	.container {
+		padding: 12px;
+	}
+
+	.hero {
+		padding: 40px 16px 32px;
+	}
+
+	.hero-title {
+		font-size: 1.6rem;
+	}
+
+	.hero-subtitle,
+	.cta-text {
+		font-size: 1rem;
+	}
+
+	.section-title,
+	.cta-title {
+		font-size: 1.4rem;
+	}
+
+	.feature-grid {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+
+	.steps {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.step {
+		flex: 1 1 100%;
+		max-width: none;
+	}
+
+	.final-cta {
+		padding: 40px 16px;
+	}
 }

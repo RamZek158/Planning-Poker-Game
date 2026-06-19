@@ -21,6 +21,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
+	min-width: 0;
 }
 
 .room-name {
@@ -29,6 +30,8 @@
 	font-size: 26px;
 	font-weight: 600;
 	letter-spacing: 0.5px;
+	line-height: 1.2;
+	word-break: break-word;
 }
 
 .room-badge {
@@ -42,6 +45,7 @@
 .room-controls {
 	display: flex;
 	gap: 12px;
+	flex-wrap: wrap;
 }
 
 .room-control-btn {
@@ -95,8 +99,8 @@
 	display: flex;
 	justify-content: center;
 	background: linear-gradient(to top, var(--bg-header-color) 70%, transparent);
-	padding-top: 50px;
-	padding-bottom: 20px;
+	padding-top: 40px;
+	padding-bottom: 16px;
 	z-index: 100;
 	pointer-events: none;
 }
@@ -244,6 +248,11 @@
 		padding: 0 20px 200px 20px;
 	}
 
+	.cards-containers {
+		padding-top: 32px;
+		padding-bottom: 14px;
+	}
+
 	.room-dialog {
 		padding: 22px;
 		border-radius: 20px;
@@ -255,5 +264,59 @@
 
 	.room-dialog-actions {
 		flex-direction: column;
+	}
+}
+
+@media (max-width: 576px) {
+	.game-room-page {
+		padding: 0 16px 170px 16px;
+	}
+
+	.room-top-bar {
+		gap: 16px;
+		align-items: stretch;
+		padding: 24px 0 18px 0;
+	}
+
+	.room-name {
+		font-size: 22px;
+	}
+
+	.room-controls {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.room-control-btn {
+		width: 100%;
+		padding: 10px 14px;
+		justify-content: center;
+	}
+
+	.cards-containers {
+		padding-top: 24px;
+		padding-bottom: 12px;
+	}
+
+	.toast {
+		width: calc(100% - 32px);
+		padding: 10px 16px;
+		text-align: center;
+	}
+
+	.toast-error {
+		top: 138px;
+	}
+
+	.room-dialog-backdrop {
+		padding: 16px;
+	}
+
+	.room-dialog {
+		padding: 20px 18px;
+	}
+
+	.room-dialog-title {
+		font-size: 22px;
 	}
 }
