@@ -6,24 +6,15 @@ const { Pool } = require("pg");
 
 const migrationsDir = path.join(__dirname, "migrations");
 const databaseUrl = process.env.DATABASE_URL?.trim();
-const usingDatabaseUrl = Boolean(databaseUrl);
-const poolConfig = usingDatabaseUrl
-	? {
-			connectionString: databaseUrl,
-			ssl:
-				process.env.NODE_ENV === "production"
-					? { rejectUnauthorized: false }
-					: false,
-		}
-	: {
-			user: process.env.DB_USER,
-			host: process.env.DB_HOST,
-			database: process.env.DB_NAME,
-			password: process.env.DB_PASSWORD,
-			port: Number(process.env.DB_PORT || 5432),
-		};
+if (!databaseUrl) {
+	console.error("DATABASE_URL is required");
+	process.exit(1);
+}
 
-const pool = new Pool(poolConfig);
+const pool = new Pool({
+	connectionString: databaseUrl,
+	ssl: databaseUrl ? { rejectUnauthorized: false } : false,
+});
 
 const run = async () => {
 	const files = fs
@@ -31,11 +22,7 @@ const run = async () => {
 		.filter((file) => file.endsWith(".sql"))
 		.sort();
 
-	console.log(
-		`[migrate] Database config: ${
-			usingDatabaseUrl ? "DATABASE_URL" : "DB_* fallback"
-		}`,
-	);
+	console.log("[migrate] Database config: DATABASE_URL");
 
 	if (!files.length) {
 		console.log("[migrate] No SQL migrations found");

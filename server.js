@@ -20,6 +20,7 @@ const RAILWAY_APP_URL =
 const clientDistPath = path.join(__dirname, "dist");
 const clientIndexPath = path.join(clientDistPath, "index.html");
 const migrationsDir = path.join(__dirname, "db", "migrations");
+const databaseUrl = process.env.DATABASE_URL?.trim();
 
 /* =========================================================
 	ENV VALIDATION
@@ -27,6 +28,11 @@ const migrationsDir = path.join(__dirname, "db", "migrations");
 
 if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
 	console.error("❌ JWT secrets missing in .env");
+	process.exit(1);
+}
+
+if (!databaseUrl) {
+	console.error("DATABASE_URL is required");
 	process.exit(1);
 }
 
@@ -85,24 +91,10 @@ app.use("/api/register", authLimiter);
 	DATABASE
 ========================================================= */
 
-const usingDatabaseUrl = Boolean(process.env.DATABASE_URL);
-const pool = new Pool(
-	process.env.DATABASE_URL
-		? {
-				connectionString: process.env.DATABASE_URL,
-				ssl: process.env.DATABASE_URL
-					? { rejectUnauthorized: false }
-					: false,
-			}
-		: {
-				user: process.env.DB_USER,
-				host: process.env.DB_HOST,
-				database: process.env.DB_NAME,
-				password: process.env.DB_PASSWORD,
-				port: Number(process.env.DB_PORT || 5432),
-				ssl: false,
-			},
-);
+const pool = new Pool({
+	connectionString: databaseUrl,
+	ssl: databaseUrl ? { rejectUnauthorized: false } : false,
+});
 
 const ensureDatabaseSchema = async () => {
 	const migrationFiles = fs
@@ -597,10 +589,7 @@ const startServer = async () => {
 		await ensureDatabaseSchema();
 
 		server.listen(PORT, HOST, () => {
-			console.log(
-				"Database mode:",
-				usingDatabaseUrl ? "DATABASE_URL" : "DB_HOST",
-			);
+			console.log("Database mode:", "DATABASE_URL");
 			console.log("CLIENT_URL:", process.env.CLIENT_URL);
 			console.log("Allowed CORS origins:", corsOrigins);
 			console.log(`[startup] API port: ${PORT}`);
