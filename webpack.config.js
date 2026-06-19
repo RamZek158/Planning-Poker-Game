@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const prod = process.env.NODE_ENV === "production";
+const backendTarget = `http://localhost:${process.env.PORT || 8088}`;
 
 module.exports = {
 	mode: prod ? "production" : "development",
@@ -56,13 +57,13 @@ module.exports = {
 		proxy: [
 			{
 				context: ["/api"],
-				target: "http://localhost:3001",
+				target: backendTarget,
 				changeOrigin: true,
 				secure: false,
 			},
 			{
 				context: ["/socket.io"],
-				target: "http://localhost:3001",
+				target: backendTarget,
 				changeOrigin: true,
 				secure: false,
 				ws: true,

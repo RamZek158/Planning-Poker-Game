@@ -10,7 +10,7 @@ const helmet = require("helmet");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
-const PORT = process.env.API_PORT || 3001;
+const PORT = process.env.PORT || 8088;
 const isProduction = process.env.NODE_ENV === "production";
 const RAILWAY_APP_URL =
 	"https://planning-poker-game-production-c411.up.railway.app";
@@ -41,6 +41,7 @@ const corsOrigins = Array.from(
 			"http://localhost:3000",
 			"http://localhost:8080",
 			"http://localhost:3001",
+			"http://localhost:8088",
 		].filter(Boolean),
 	),
 );

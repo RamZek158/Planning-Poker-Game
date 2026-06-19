@@ -14,12 +14,17 @@ import {
 	deleteGameRoom,
 } from "../../api/gameSettings/gameSettings";
 
-const socket = io(
-	typeof window !== "undefined" ? window.location.origin : undefined,
-	{
-		path: "/socket.io",
-	},
-);
+const isProd =
+	typeof window !== "undefined" && window.location.hostname !== "localhost";
+const socketUrl =
+	typeof window === "undefined"
+		? undefined
+		: isProd
+			? window.location.origin
+			: "http://localhost:8088";
+const socket = io(socketUrl, {
+	path: "/socket.io",
+});
 
 function GameRoom() {
 	const [gameSettings, setGameSettings] = useState({});
