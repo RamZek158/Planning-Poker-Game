@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "start": "webpack serve --port 8080",
+        "start": "concurrently \"npm run server\" \"npm run client\"",
+        "server": "API_PORT=3001 node server.js",
+        "client": "webpack serve --host 0.0.0.0 --port 8080",
         "build": "webpack",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -12,7 +14,10 @@
     "license": "ISC",
     "description": "",
     "dependencies": {
+        "@react-oauth/google": "^0.12.2",
+        "axios": "^1.13.2",
         "bcrypt": "^6.0.0",
+        "concurrently": "^9.2.3",
         "cors": "^2.8.6",
         "dotenv": "^17.2.4",
         "express": "^5.2.1",
@@ -21,15 +26,13 @@
         "jsonwebtoken": "^9.0.3",
         "pg": "^8.18.0",
         "qrcode.react": "^4.2.0",
-        "react-cookie": "^8.0.1",
         "react": "^19.1.0",
+        "react-cookie": "^8.0.1",
         "react-dom": "^19.1.0",
         "react-router": "^7.6.0",
         "react-router-dom": "^7.13.0",
         "socket.io": "^4.8.3",
         "socket.io-client": "^4.8.3",
-        "axios": "^1.13.2",
-        "@react-oauth/google": "^0.12.2",
         "uuid": "^13.0.0"
     },
     "devDependencies": {
