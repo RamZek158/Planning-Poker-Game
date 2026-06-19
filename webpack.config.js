@@ -53,12 +53,13 @@ module.exports = {
 		open: false,
 		hot: true,
 		historyApiFallback: true,
-		proxy: {
-			"/api": {
+		proxy: [
+			{
+				context: ["/api"],
 				target: "http://localhost:3001",
 				changeOrigin: true,
 				secure: false,
 			},
-		},
+		],
 	},
 };
