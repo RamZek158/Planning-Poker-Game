@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const path = require("path");
 const express = require("express");
 const { Pool } = require("pg");
 const cors = require("cors");
@@ -14,6 +15,8 @@ const PORT = process.env.PORT || 8088;
 const isProduction = process.env.NODE_ENV === "production";
 const RAILWAY_APP_URL =
 	"https://planning-poker-game-production-c411.up.railway.app";
+const clientDistPath = path.join(__dirname, "dist");
+const clientIndexPath = path.join(clientDistPath, "index.html");
 
 /* =========================================================
 	ENV VALIDATION
@@ -59,6 +62,8 @@ app.use(
 		credentials: true,
 	}),
 );
+
+app.use(express.static(clientDistPath));
 
 // JSON parser
 app.use(express.json());
@@ -420,6 +425,10 @@ app.get("/api/db-test", async (req, res) => {
 			.status(500)
 			.json({ ok: false, error: error.code || "Database unavailable" });
 	}
+});
+
+app.get(/^\/(?!api|socket\.io).*/, (req, res) => {
+	res.sendFile(clientIndexPath);
 });
 
 /* =========================================================
