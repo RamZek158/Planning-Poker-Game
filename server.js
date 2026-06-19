@@ -12,6 +12,8 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 const PORT = process.env.API_PORT || 3001;
 const isProduction = process.env.NODE_ENV === "production";
+const RAILWAY_APP_URL =
+	"https://planning-poker-game-production-c411.up.railway.app";
 
 /* =========================================================
 	ENV VALIDATION
@@ -30,19 +32,24 @@ if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
 app.use(helmet());
 
 // CORS
-const corsOrigins = isProduction
-	? [process.env.CLIENT_URL].filter(Boolean)
-	: [
-			process.env.CLIENT_URL,
+const normalizeOrigin = (origin) => origin?.trim().replace(/\/$/, "");
+const corsOrigins = Array.from(
+	new Set(
+		[
+			normalizeOrigin(process.env.CLIENT_URL),
+			RAILWAY_APP_URL,
 			"http://localhost:3000",
 			"http://localhost:8080",
 			"http://localhost:3001",
-		].filter(Boolean);
+		].filter(Boolean),
+	),
+);
 
 app.use(
 	cors({
 		origin(origin, callback) {
-			if (!origin || corsOrigins.includes(origin)) {
+			const normalizedOrigin = normalizeOrigin(origin);
+			if (!normalizedOrigin || corsOrigins.includes(normalizedOrigin)) {
 				return callback(null, true);
 			}
 
@@ -429,6 +436,14 @@ const io = new Server(server, {
 		origin: corsOrigins,
 		credentials: true,
 	},
+	allowRequest: (req, callback) => {
+		const normalizedOrigin = normalizeOrigin(req.headers.origin);
+		if (!normalizedOrigin || corsOrigins.includes(normalizedOrigin)) {
+			return callback(null, true);
+		}
+
+		return callback("Not allowed by CORS", false);
+	},
 });
 
 // Хранилище состояний комнат в памяти сервера
@@ -543,6 +558,7 @@ server.listen(PORT, () => {
 		usingDatabaseUrl ? "DATABASE_URL" : "DB_HOST",
 	);
 	console.log("CLIENT_URL:", process.env.CLIENT_URL);
+	console.log("Allowed CORS origins:", corsOrigins);
 	console.log(`[startup] API port: ${PORT}`);
 	console.log(
 		isProduction
