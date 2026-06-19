@@ -10,7 +10,7 @@ const helmet = require("helmet");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
-const PORT = process.env.API_PORT || process.env.PORT || 3001;
+const PORT = process.env.API_PORT || 3001;
 
 /* =========================================================
 	ENV VALIDATION
@@ -60,23 +60,26 @@ app.use("/api/register", authLimiter);
 	DATABASE
 ========================================================= */
 
-const pool = new Pool(
-	process.env.DATABASE_URL
-		? {
-				connectionString: process.env.DATABASE_URL,
-				ssl:
-					process.env.NODE_ENV === "production"
-						? { rejectUnauthorized: false }
-						: false,
-			}
-		: {
-				user: process.env.DB_USER,
-				host: process.env.DB_HOST,
-				database: process.env.DB_NAME,
-				password: process.env.DB_PASSWORD,
-				port: Number(process.env.DB_PORT) || 5432,
-			},
-);
+const databaseUrl = process.env.DATABASE_URL?.trim();
+const usingDatabaseUrl = Boolean(databaseUrl);
+const poolConfig = usingDatabaseUrl
+	? {
+			connectionString: databaseUrl,
+			ssl:
+				process.env.NODE_ENV === "production"
+					? { rejectUnauthorized: false }
+					: false,
+		}
+	: {
+			user: process.env.DB_USER,
+			host: process.env.DB_HOST,
+			database: process.env.DB_NAME,
+			password: process.env.DB_PASSWORD,
+			port: Number(process.env.DB_PORT || 5432),
+		};
+
+const pool = new Pool(poolConfig);
+const dbConfigSource = usingDatabaseUrl ? "DATABASE_URL" : "DB_* fallback";
 
 /* =========================================================
 	JWT HELPERS
@@ -393,6 +396,18 @@ app.delete("/api/users/:id", authenticateToken, async (req, res) => {
 
 app.get("/api/test", (req, res) => res.json({ message: "Backend alive" }));
 
+app.get("/api/db-test", async (req, res) => {
+	try {
+		const result = await pool.query("SELECT NOW() AS time");
+		res.json({ ok: true, time: result.rows[0].time });
+	} catch (error) {
+		console.error("DB test error:", error);
+		res
+			.status(500)
+			.json({ ok: false, error: error.code || "Database unavailable" });
+	}
+});
+
 /* =========================================================
 	START SERVER & WEBSOCKETS (SOCKET.IO)
 ========================================================= */
@@ -516,5 +531,7 @@ io.on("connection", (socket) => {
 
 // ЗАПУСК СЕРВЕРА! Обрати внимание, теперь мы запускаем `server.listen`, а не `app.listen`
 server.listen(PORT, () => {
+	console.log(`[startup] Database config: ${dbConfigSource}`);
+	console.log(`[startup] API port: ${PORT}`);
 	console.log(`🚀 Server & WebSockets running → http://localhost:${PORT}`);
 });

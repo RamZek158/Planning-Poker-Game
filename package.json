@@ -4,8 +4,9 @@
     "main": "index.js",
     "scripts": {
         "start": "concurrently \"npm run server\" \"npm run client\"",
-        "server": "API_PORT=3001 node server.js",
+        "server": "node server.js",
         "client": "webpack serve --host 0.0.0.0 --port 8080",
+        "migrate": "node db/migrate.js",
         "build": "webpack",
         "test": "echo \"Error: no test specified\" && exit 1"
     },

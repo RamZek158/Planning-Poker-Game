@@ -60,6 +60,13 @@ module.exports = {
 				changeOrigin: true,
 				secure: false,
 			},
+			{
+				context: ["/socket.io"],
+				target: "http://localhost:3001",
+				changeOrigin: true,
+				secure: false,
+				ws: true,
+			},
 		],
 	},
 };
