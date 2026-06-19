@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const { Pool } = require("pg");
@@ -17,6 +18,7 @@ const RAILWAY_APP_URL =
 	"https://planning-poker-game-production-c411.up.railway.app";
 const clientDistPath = path.join(__dirname, "dist");
 const clientIndexPath = path.join(clientDistPath, "index.html");
+const migrationsDir = path.join(__dirname, "db", "migrations");
 
 /* =========================================================
 	ENV VALIDATION
@@ -100,6 +102,26 @@ const pool = new Pool(
 				ssl: false,
 			},
 );
+
+const ensureDatabaseSchema = async () => {
+	const migrationFiles = fs
+		.readdirSync(migrationsDir)
+		.filter((file) => file.endsWith(".sql"))
+		.sort();
+
+	if (!migrationFiles.length) {
+		console.warn("[startup] No SQL migrations found, skipping schema init");
+		return;
+	}
+
+	for (const file of migrationFiles) {
+		const filePath = path.join(migrationsDir, file);
+		const sql = fs.readFileSync(filePath, "utf8");
+
+		await pool.query(sql);
+		console.log(`[startup] Applied migration: ${file}`);
+	}
+};
 /* =========================================================
 	JWT HELPERS
 ========================================================= */
@@ -195,7 +217,15 @@ app.post("/api/register", async (req, res) => {
 			},
 		});
 	} catch (e) {
-		console.error("Register error:", e);
+		console.error("Ошибка при регистрации:", {
+			message: e.message,
+			code: e.code,
+			detail: e.detail,
+			hint: e.hint,
+			table: e.table,
+			constraint: e.constraint,
+			stack: e.stack,
+		});
 		res.status(500).json({ error: "Server error" });
 	}
 });
@@ -561,17 +591,28 @@ io.on("connection", (socket) => {
 });
 
 // ЗАПУСК СЕРВЕРА! Обрати внимание, теперь мы запускаем `server.listen`, а не `app.listen`
-server.listen(PORT, () => {
-	console.log(
-		"Database mode:",
-		usingDatabaseUrl ? "DATABASE_URL" : "DB_HOST",
-	);
-	console.log("CLIENT_URL:", process.env.CLIENT_URL);
-	console.log("Allowed CORS origins:", corsOrigins);
-	console.log(`[startup] API port: ${PORT}`);
-	console.log(
-		isProduction
-			? `🚀 Server & WebSockets running on internal port ${PORT}`
-			: `🚀 Server & WebSockets running → http://localhost:${PORT}`,
-	);
-});
+const startServer = async () => {
+	try {
+		await ensureDatabaseSchema();
+
+		server.listen(PORT, () => {
+			console.log(
+				"Database mode:",
+				usingDatabaseUrl ? "DATABASE_URL" : "DB_HOST",
+			);
+			console.log("CLIENT_URL:", process.env.CLIENT_URL);
+			console.log("Allowed CORS origins:", corsOrigins);
+			console.log(`[startup] API port: ${PORT}`);
+			console.log(
+				isProduction
+					? `🚀 Server & WebSockets running on internal port ${PORT}`
+					: `🚀 Server & WebSockets running → http://localhost:${PORT}`,
+			);
+		});
+	} catch (error) {
+		console.error("[startup] Failed to initialize database schema:", error);
+		process.exit(1);
+	}
+};
+
+startServer();
