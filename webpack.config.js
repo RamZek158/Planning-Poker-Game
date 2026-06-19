@@ -45,9 +45,12 @@ module.exports = {
 		filename: "main.js",
 		path: path.resolve(__dirname, "dist"),
 	},
+
 	devServer: {
 		port: 8080,
-		open: true,
+		host: "0.0.0.0",
+		allowedHosts: "all",
+		open: false,
 		hot: true,
 		historyApiFallback: true,
 		proxy: [
